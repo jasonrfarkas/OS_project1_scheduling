@@ -30,10 +30,6 @@ public class CPU {
 		
 		while(true){
 			
-			if()
-
-			// after edits
-
 			//checking if ReadyQueue is empty or not
 			if (!myReadyQueue.isEmpty()){
 				
