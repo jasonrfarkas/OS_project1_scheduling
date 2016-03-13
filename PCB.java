@@ -13,7 +13,7 @@ public class PCB {
 	private int blockedStartTime;
 	private int blockedEndTime;
 	
-	PCB(String jobDescription ){
+	public PCB(String jobDescription ){
 		
 		String []tempArray = jobDescription.split("\\s");
 		
@@ -32,8 +32,7 @@ public class PCB {
 		CPUBursts = new int [totalCPUBursts];
 		for (int i = 0; i<totalCPUBursts; i++){
 			CPUBursts[i] = Integer.valueOf(tempArray[i+3]);
-			
-;		}
+		}
 	}
 
 	public int getJobId() {

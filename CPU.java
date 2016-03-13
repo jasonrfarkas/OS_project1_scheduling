@@ -3,7 +3,7 @@
 public class CPU {
 	private boolean available;
 	private int cycle;
-    CPU (){
+    public CPU (){
     	setAvailable(true);
     	setCycle(0);
     }
@@ -42,12 +42,9 @@ public class CPU {
 				if (currentCPUBurst >= currentPCB.getTotalCPUBursts()){
 					
 					System.out.println("(currentCPUBurst >= currentPCB.getTotalCPUBursts()");
-					
-					
 					//System.out.println("myReadyQueue"+myReadyQueue);
 					//System.out.println("myBlockedQueue"+myBlockedQueue);
 					//System.out.println(myJobQueue.isEmpty());
-					
 					if (myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty()){
 						System.out.println("myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty())");
 					}
