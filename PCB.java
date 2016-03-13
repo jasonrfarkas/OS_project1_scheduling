@@ -219,7 +219,7 @@ public class PCB {
 	private void increaseBurst(){
 		setCurrentCPUBurst(getCurrentCPUBurst()+1);
 		if(this.getCurrentCPUBurst >= this.getTotalCPUBursts()){
-			setState("finished")
+			setState("finished");
 		}
 		else{
 			setState("blocked");
