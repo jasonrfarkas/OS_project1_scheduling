@@ -110,7 +110,9 @@ public class PCB {
 	}
 
 	public void setiOCompletionTime(int iOCompletionTime) {
-		iOCompletionTime = iOCompletionTime;
+		if(iOCompletionTime >= 0){
+			iOCompletionTime = iOCompletionTime;
+		}
 	}
 	
 	public int getCurrentCPUBurst() {
