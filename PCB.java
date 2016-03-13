@@ -2,8 +2,7 @@
 public class PCB {
 	private int jobId;
 	private String state;
-	private int simulated_pc;
-	//program counter
+	private int simulated_pc; // may be the same as cycleCounter
 	private int totalCPUBursts;
 	private int[] CPUBursts;
 	private int currentCPUBurst;
@@ -11,11 +10,7 @@ public class PCB {
 
 	private int arrivalTime;
 	private int cycleCounter; // I think this is the same as the simulated_pc
-
-	
-	
-	
-	//private int completionTime;
+	private int completionTime; // Time when pcb job completed
 	
 	//private int blockedStartTime;
 	//private int blockedEndTime;
@@ -59,9 +54,17 @@ public class PCB {
 		this.state = state;
 	}
 
+/*	
+	I would want to automiate this function from the pcb class, but I can't figure out a way to determine if it is running except from outside the class
 	public void setState(int cpuCycle) {
-		//ready, running, blocked
-	}
+		//ready, running, blocked, finished
+		if(this.getiOCompletionTime()>0){
+			this.state = "blocked";
+		}
+		else if(){
+
+		}
+	}*/
 
 	public int getCycleCounter() {
 		return cycleCounter;
