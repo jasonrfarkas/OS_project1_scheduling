@@ -153,7 +153,7 @@ public class PCB {
 		else if(this.blocked()){
 			return 0;
 		}
-		else(){
+		else{
 			/*
 				Assuming this function is only called when pcb is on a cpu, 
 				If we have more time we should add functions to ensure it can only run if it is on a cpu	
