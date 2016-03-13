@@ -4,14 +4,14 @@ public class PCB {
 	private String state;
 	private int simulated_pc; // may be the same as cycleCounter
 	private int totalCPUBursts;
-	private int[] CPUBursts;
+	private int[] CPUBursts; 
 	private int currentCPUBurst;
 	private int iOCompletionTime;
 
 	private int arrivalTime;
 	private int cycleCounter; // I think this is the same as the simulated_pc
 	private int completionTime; // Time when pcb job completed
-	
+	private int remainingInCurrentBurst;
 	//private int blockedStartTime;
 	//private int blockedEndTime;
 	
@@ -36,6 +36,7 @@ public class PCB {
 		for (int i = 0; i<totalCPUBursts; i++){
 			CPUBursts[i] = Integer.valueOf(tempArray[i+3]);
 		}
+		remainingInCurrentBurst = 
 	}
 
 	public int getJobId() {
@@ -50,14 +51,61 @@ public class PCB {
 		return state;
 	}
 
+	public Boolean ready() {
+		return this.getState() == "ready";
+	}
+
+	public Boolean blocked() {
+		return this.getState() == "blocked" || getiOCompletionTime > 0;
+	}
+
+	public Boolean running() {
+		return this.getState() == "running";
+	}
+
+	public Boolean completed() {
+		return this.getState() == "completed" || this.getCurrentCPUBurst >= this.getTotalCPUBursts();
+	}
+
 	public void setState(String state) {
 		this.state = state;
 	}
 
+	public String assumeNextState(){
+		// This function tries to automatically reset the state and return it
+		// This function should be refactored later
+		state = this.getState();
+		if(getiOCompletionTime > 0){
+			this.setState("blocked");
+		}
+		else if(state== null){
+			this.setState("ready");
+		}
+		else if(state== "ready"){
+			this.setState("running");
+		}
+		else if(state == completed || this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
+			this.setState("completed");
+		}
+		else if(state=="blocked"){
+			if(getiOCompletionTime <= 0){
+				this.setState("ready");
+			}
+		}
+		else if( getRemainingInBurst() <= 0 ){
+			this.setState("blocked");
+			this.increaseBurst();
+		}
+	}
+
+	
+
+
 /*	
 	I would want to automiate this function from the pcb class, but I can't figure out a way to determine if it is running except from outside the class
+	
 	public void setState(int cpuCycle) {
-		//ready, running, blocked, finished
+		//ready, running, blocked, completed
 		if(this.getiOCompletionTime()>0){
 			this.state = "blocked";
 		}
@@ -84,6 +132,47 @@ public class PCB {
 		}
 	}
 
+	private void increasePC(){
+		setSimulated_pc(getSimulated_pc()+1);
+		setTotalCPUBursts(getTotalCPUBursts()+1);
+		setRemainingInCurrentBurst(getRemainingInBurst()-1);
+		if( getRemainingInBurst() <= 0 ){
+			this.increaseBurst();
+		}
+	}
+
+	public int runLine(){
+		/*
+			This program simulates running a line of code in the program
+			It returns -2 if the program is already completed
+			It returns -1 if the program finishes after running the line
+			It returns 0 if the program can't run because it is still waiting for io
+			It returns 1 if the program ran one line successfully
+			After running the line of code the state will be changed accordingly
+		*/
+		if(this.completed()){ 
+			return -2;
+		}
+		else if(this.blocked()){
+			return 0;
+		}
+		else(){
+			/*
+				Assuming this function is only called when pcb is on a cpu, 
+				If we have more time we should add functions to ensure it can only run if it is on a cpu	
+			*/
+			setState("running");
+			increasePC();
+			//assumeNextState();
+			if(this.completed()){
+				return -1;
+			}
+			return 1;
+		}
+	}
+
+
+
 	public int getTotalCPUBursts() {
 		return totalCPUBursts;
 	}
@@ -98,6 +187,37 @@ public class PCB {
 
 	public void setCPUBursts(int[] cPUBursts) {
 		CPUBursts = cPUBursts;
+	}
+
+	public int getCurrentCPUBurst() {
+		return currentCPUBurst;
+	}
+
+	public void setCurrentCPUBurst(int currentCPUBurst) {
+		this.currentCPUBurst = currentCPUBurst;
+	}
+
+	public int getCurrentCPUBurstLength(){
+		return getCPUBursts()[getCurrentCPUBurst()];
+	}
+
+	public int getRemainingInBurst(){
+		return remainingInCurrentBurst;
+	}
+
+	private void setRemainingInCurrentBurst(int r){
+		this.remainingInCurrentBurst = r;
+	}
+	private void increaseBurst(){
+		setCurrentCPUBurst(getCurrentCPUBurst()+1);
+		if(this.getCurrentCPUBurst >= this.getTotalCPUBursts()){
+			setState("finished")
+		}
+		else{
+			setState("blocked")
+			setiOCompletionTime(10);
+			setRemainingInCurrentBurst(getCurrentCPUBurstLength());
+		}
 	}
 
 	public int getCompletionTime() {
@@ -118,13 +238,7 @@ public class PCB {
 		}
 	}
 	
-	public int getCurrentCPUBurst() {
-		return currentCPUBurst;
-	}
 
-	public void setCurrentCPUBurst(int currentCPUBurst) {
-		this.currentCPUBurst = currentCPUBurst;
-	}
 	
 /*	
 	We should only be using iocompletion
