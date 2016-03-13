@@ -28,10 +28,11 @@ public class CPUScheduling {
 		while (myReadyQueue.size()<2 && !myJobQueue.isEmpty()){
 			PCB myPCB = myJobQueue.getNextJob();
 			myReadyQueue.enqueue(myPCB);
+			System.out.println(myReadyQueue.toString());
 		}	
 				
 		System.out.println(myJobQueue.size());
-		myCPU.Run(myJobQueue, myReadyQueue, myBlockedQueue);	
+		// myCPU.Run(myJobQueue, myReadyQueue, myBlockedQueue);	
 		
 		//System.out.println("The size of this ready Q is "+(myReadyQueue).size());
 		System.out.println(myBlockedQueue);
