@@ -2,14 +2,14 @@
 public class PCB {
 	private int jobId;
 	private String state;
-	private int simulated_pc; // may be the same as cycleCounter
+	private int simulatedPc; // may be the same as cycleCounter
 	private int totalCPUBursts;
 	private int[] CPUBursts; 
 	private int currentCPUBurst;
 	private int iOCompletionTime;
 
 	private int arrivalTime;
-	private int cycleCounter; // I think this is the same as the simulated_pc
+	private int cycleCounter; // I think this is the same as the simulatedPc
 	private int completionTime; // Time when pcb job completed
 	private int remainingInCurrentBurst;
 	//private int blockedStartTime;
@@ -22,21 +22,21 @@ public class PCB {
 		jobId = Integer.valueOf(tempArray[0]);
 		arrivalTime = Integer.valueOf(tempArray[1]);
 		state = null;
+		iOCompletionTime= 0;
+		setCurrentCPUBurst(0);
+		simulatedPc=0;
 		
 		cycleCounter = 0;
 		// blockedStartTime = 0;
 		// blockedEndTime = 0;
-		iOCompletionTime= 0;
-		setCurrentCPUBurst(0);
+		
 		
 		totalCPUBursts = Integer.valueOf(tempArray[2]);
-		
-		
 		CPUBursts = new int [totalCPUBursts];
 		for (int i = 0; i<totalCPUBursts; i++){
 			CPUBursts[i] = Integer.valueOf(tempArray[i+3]);
 		}
-		remainingInCurrentBurst = 
+		remainingInCurrentBurst = getCurrentCPUBurstLength();
 	}
 
 	public int getJobId() {
@@ -71,7 +71,7 @@ public class PCB {
 		this.state = state;
 	}
 
-	public String assumeNextState(){
+/*	public String assumeNextState(){
 		// This function tries to automatically reset the state and return it
 		// This function should be refactored later
 		state = this.getState();
@@ -97,10 +97,7 @@ public class PCB {
 			this.increaseBurst();
 		}
 	}
-
-	
-
-
+*/
 /*	
 	I would want to automiate this function from the pcb class, but I can't figure out a way to determine if it is running except from outside the class
 	
@@ -114,21 +111,21 @@ public class PCB {
 		}
 	}*/
 
-	public int getCycleCounter() {
+/*	public int getCycleCounter() {
 		return cycleCounter;
 	}
 
 	public void setCycleCounter(int cycleCounter) {
 		this.cycleCounter = cycleCounter;
-	}
+	}*/
 
 	public int getSimulated_pc(){
-		return simulated_pc;
+		return simulatedPc;
 	}
 
-	public void setSimulated_pc(int simulated_pc){
-		if(simulated_pc > this.simulated_pc){
-			this.simulated_pc = simulated_pc;
+	private void setSimulated_pc(int simulatedPc){
+		if(simulatedPc > this.simulatedPc){
+			this.simulatedPc = simulatedPc;
 		}
 	}
 
@@ -171,7 +168,18 @@ public class PCB {
 		}
 	}
 
-
+	public int ioWait(){ 
+		//return 0 if waited succesfully returns -1 if it finished io, -2 if it wasn't in waiting mode
+		if(waiting()){
+			setiOCompletionTime(getiOCompletionTime()-1); 
+			if (getiOCompletionTime() <= 0){
+				setState("ready");
+				return -1;
+			}
+			return 0;
+		}
+		return -2;
+	}
 
 	public int getTotalCPUBursts() {
 		return totalCPUBursts;
@@ -214,7 +222,7 @@ public class PCB {
 			setState("finished")
 		}
 		else{
-			setState("blocked")
+			setState("blocked");
 			setiOCompletionTime(10);
 			setRemainingInCurrentBurst(getCurrentCPUBurstLength());
 		}
@@ -263,7 +271,7 @@ public class PCB {
 	public String toString(){
 		String myString = "";
 		myString+="\n\nCurrent information of this PCB\n\n";
-		myString+="jobId = "+jobId+"\narrivalTime = "+arrivalTime+"\ncycleCounter = "+cycleCounter;
+		myString+="jobId = "+jobId+"\narrivalTime = "+arrivalTime+"\n simulatedPc = "+simulatedPc;
 		
 		myString+="\ncurrentCPUBurst = "+currentCPUBurst+" \ntotalCPUBursts = "+totalCPUBursts+"\nCPUBursts : ";
 		for (int i = 0; i<totalCPUBursts; i++)
