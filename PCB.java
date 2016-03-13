@@ -1,17 +1,24 @@
 
 public class PCB {
 	private int jobId;
-	private int arrivalTime;
-	private int cycleCounter;
-	private int currentCPUBurst;
+	private String state;
+	private int simulated_pc;
+	//program counter
 	private int totalCPUBursts;
 	private int[] CPUBursts;
-	private int completionTime;
-	private int IOCompletionTime;
-	private String state;
+	private int currentCPUBurst;
+	private int iOCompletionTime;
+
+	private int arrivalTime;
+	private int cycleCounter; // I think this is the same as the simulated_pc
+
 	
-	private int blockedStartTime;
-	private int blockedEndTime;
+	
+	
+	//private int completionTime;
+	
+	//private int blockedStartTime;
+	//private int blockedEndTime;
 	
 	public PCB(String jobDescription ){
 		
@@ -22,8 +29,9 @@ public class PCB {
 		state = null;
 		
 		cycleCounter = 0;
-		blockedStartTime = 0;
-		blockedEndTime = 0;
+		// blockedStartTime = 0;
+		// blockedEndTime = 0;
+		iOCompletionTime= 0;
 		setCurrentCPUBurst(0);
 		
 		totalCPUBursts = Integer.valueOf(tempArray[2]);
@@ -51,12 +59,26 @@ public class PCB {
 		this.state = state;
 	}
 
+	public void setState(int cpuCycle) {
+		//ready, running, blocked
+	}
+
 	public int getCycleCounter() {
 		return cycleCounter;
 	}
 
 	public void setCycleCounter(int cycleCounter) {
 		this.cycleCounter = cycleCounter;
+	}
+
+	public int getSimulated_pc(){
+		return simulated_pc;
+	}
+
+	public void setSimulated_pc(int simulated_pc){
+		if(simulated_pc > this.simulated_pc){
+			this.simulated_pc = simulated_pc;
+		}
 	}
 
 	public int getTotalCPUBursts() {
@@ -83,12 +105,12 @@ public class PCB {
 		this.completionTime = completionTime;
 	}
 
-	public int getIOCompletionTime() {
-		return IOCompletionTime;
+	public int getiOCompletionTime() {
+		return iOCompletionTime;
 	}
 
-	public void setIOCompletionTime(int iOCompletionTime) {
-		IOCompletionTime = iOCompletionTime;
+	public void setiOCompletionTime(int iOCompletionTime) {
+		iOCompletionTime = iOCompletionTime;
 	}
 	
 	public int getCurrentCPUBurst() {
@@ -99,6 +121,9 @@ public class PCB {
 		this.currentCPUBurst = currentCPUBurst;
 	}
 	
+/*	
+	We should only be using iocompletion
+
 	public int getBlockedStartTime() {
 		return blockedStartTime;
 	}
@@ -113,7 +138,7 @@ public class PCB {
 
 	public void setBlockedEndTime(int blockedEndTime) {
 		this.blockedEndTime = blockedEndTime;
-	}
+	}*/
 
 	
 	public String toString(){
@@ -125,7 +150,7 @@ public class PCB {
 		for (int i = 0; i<totalCPUBursts; i++)
 			myString+=" "+ CPUBursts[i];
 		
-		myString+="\ncompletionTime = "+completionTime+"\nIOCompletionTime = "+IOCompletionTime+"\nstate = "+state;
+		myString+="\ncompletionTime = "+completionTime+"\niOCompletionTime = "+iOCompletionTime+"\nstate = "+state;
 		
 		return myString;
 	}
