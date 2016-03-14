@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
 
 public class OS {
 	private int memory;
@@ -7,14 +10,24 @@ public class OS {
 	private ReadyQueue myReadyQueue;
 	private BlockedQueue myBlockedQueue;
 
-	public OS(){
+/*	public OS(){
 		myJobQueue = new JobQueue();
 		myCPU = new CPU();
 		myReadyQueue = new ReadyQueue();
 		myBlockedQueue = new BlockedQueue();
 		memory = 0;
 		memoryCapacity = 10;
-		loadJobs();
+		loadJobs("");
+		run();
+	}*/
+	public OS(String filename){
+		myJobQueue = new JobQueue();
+		myCPU = new CPU();
+		myReadyQueue = new ReadyQueue();
+		myBlockedQueue = new BlockedQueue();
+		memory = 0;
+		memoryCapacity = 10;
+		loadJobs(filename);
 		run();
 	}
 
@@ -42,6 +55,8 @@ public class OS {
 	}
 
 	public void jobQReadyQHandOff(){
+		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
+		//System.out.println("this.hasMemory()= " +this.hasMemory()); 
 		if(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
 			myReadyQueue.enqueue(myJobQueue.getNextJob());
 			increaseMemory();
@@ -49,12 +64,17 @@ public class OS {
 	}
 
 	public PCB getNextReadyJob(){
+		//System.out.println("entering while loop to check if job q has jobs");
 		//might change this to specifially call a cpu load function and hand it off the pcb
 		while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
+			//System.out.println("handing off a job");
 			jobQReadyQHandOff();
 		}
-		PCB rPCB = myReadyQueue.dequeue()
+		// System.out.println("dequeueing from readyQ");
+		PCB rPCB = myReadyQueue.dequeue();
+		// System.out.println("connecting cpu to pcb");
 		rPCB.connectCPU(myCPU);
+		//System.out.println("returning pcb");
 		return rPCB;	
 	}
 
@@ -71,7 +91,7 @@ public class OS {
 	}
 
 	public void refreshBlocked(){
-		myBlockedQueue.blockedTimer();
+		myBlockedQueue.blockedTimer(myReadyQueue);
 		// This works by having the blocked queue pass pcb's directly to the ready quequ, it should actually be that it passes them to the system first
 		// we should also allow the passage of linked lists to the system.
 	}
@@ -80,40 +100,50 @@ public class OS {
 	}
 */
 	public void loadJobs(String filename){
-		JobQueue myJobQueue = new JobQueue();
-		CPU myCPU = new CPU();
-		ReadyQueue myReadyQueue = new ReadyQueue();
-		BlockedQueue myBlockedQueue = new BlockedQueue();
+		//System.out.println("trying to load jobs from " + filename);
+		this.myJobQueue = new JobQueue();
+		this.myCPU = new CPU();
+		this.myReadyQueue = new ReadyQueue();
+		this.myBlockedQueue = new BlockedQueue();
 		
 		try {
 			Scanner inFile = new Scanner(new FileReader(filename));
-			
 			while (inFile.hasNext()){
+				//System.out.println("inFile.hasNext() ");
 				String s = inFile.nextLine();
 				myJobQueue.enqueue(s); 
+				//System.out.println("loaded something into jobQ ");
 			}
 			inFile.close();
 		}
 		catch (FileNotFoundException e) {
-			
+			//System.out.println("caught exception");
 			e.printStackTrace();
 		}
-				
-		while (myReadyQueue.size()<2 && myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
+		
+		//System.out.println("handing off jobs to readyQ");	
+		while (myReadyQueue.size()<2 && myJobQueue.hasGivableJobs(myCPU.getCycle()) == true && this.hasMemory() == true){
+			//System.out.println("handing off a job");	
+			//System.out.println("myReadyQueue.size()= " +myReadyQueue.size());
+			//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " +myJobQueue.hasGivableJobs(myCPU.getCycle()) );
 			jobQReadyQHandOff();
 		}	
 				
-		System.out.println(myJobQueue.size());
-		//System.out.println("The size of this ready Q is "+(myReadyQueue).size());
+		//System.out.println(myJobQueue.size());
+		////System.out.println("The size of this ready Q is "+(myReadyQueue).size());
 		
 	}
 	
 	public void run(){
 		// I want memory to be managed via the os so I need to change something here. 
-		myCPU.Run(myJobQueue, myReadyQueue, myBlockedQueue);
-		System.out.println(myBlockedQueue);
+		myCPU.Run(myJobQueue, myReadyQueue, myBlockedQueue, this);
+		//System.out.println(myBlockedQueue);
 	}
 
+	public boolean running(){
+		System.out.println("!myJobQueue.isEmpty() = " + !myJobQueue.isEmpty() + " getMemory() = " + getMemory());
+		return !myJobQueue.isEmpty() || (getMemory() > 0);
+	}
 }
 
 

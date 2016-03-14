@@ -13,8 +13,8 @@ public class ReadyQueue {
 
     private Node head = null;
     private Node tail = null;
-    private int memory_capacity = 10;
-    public int in_memory = 0;
+    //private int memory_capacity = 10;
+    //public int in_memory = 0;
     private int capacity= 10;
     private int size = 0;
 
@@ -23,7 +23,7 @@ public class ReadyQueue {
         if (isEmpty()) {
         	newNode.pcb.setState("ready");
         	head = newNode;
-            in_memory+=1;
+           // in_memory+=1;
         	
         } 
         else if (this.size() == capacity){
@@ -34,7 +34,7 @@ public class ReadyQueue {
         else {
         	newNode.pcb.setState("ready");
         	tail.next = newNode;
-            in_memory+=1;
+            //in_memory+=1;
         	
         }
        
@@ -69,6 +69,7 @@ public class ReadyQueue {
         for (Node node = head; node != null; node = node.next) {
             count++;
         }
+        //System.out.println("size is " + size);
         return count;
     }
     

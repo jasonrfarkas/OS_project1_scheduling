@@ -6,7 +6,7 @@ public class CPU {
 	private PCB loadedPCB;
 
     public CPU (){
-    	setAvailable(true);
+    	available = true;
     	setCycle(0);
     	loadedPCB = null;
     }
@@ -27,13 +27,13 @@ public class CPU {
 		// not sure what will happen if !isAvailable()
 		PCB returnPCB= loadedPCB;
 		loadedPCB = null;
-		this.available = false;
+		this.available = true;
 		return returnPCB;
 	}
 
 	public PCB contextSwitch(PCB loadPCB) {
 		PCB returnPCB = popLoadedPCB();
-		setLoadedPCB(loadPCB)
+		setLoadedPCB(loadPCB);
 		return returnPCB;
 	}
 	
@@ -48,49 +48,58 @@ public class CPU {
 	}
 
 	public void Run(JobQueue myJobQueue, ReadyQueue myReadyQueue, BlockedQueue myBlockedQueue, OS myOS){
-		System.out.println("inside Run method of CPU class");
-		System.out.println("After time cycle of "+cycle);
-		System.out.println("printing myReadyQueue: "+myReadyQueue);
-		System.out.println("printing myBlockedQueue: "+myBlockedQueue);
+		//System.out.println("inside Run method of CPU class");
+		//System.out.println("After time cycle of "+cycle);
+		//System.out.println("printing myReadyQueue: "+myReadyQueue);
+		//System.out.println("printing myBlockedQueue: "+myBlockedQueue);
 		
-		while(true){
+		while(myOS.running()){
+			//System.out.println("my os is running");
 			if(isAvailable()){
+			//	System.out.println("space is availible");
 				myOS.refreshBlocked();
+			//	System.out.println("blockedQ is refreshed");
 				if(myOS.canPassPCBToCPU()){
+			//		System.out.println("Getting item fom readyQ");
 					setLoadedPCB(myOS.getNextReadyJob());
 				}
 				else{
+			//		System.out.println("no items to get from ready/jobQ");
 					increaseCycle();
 					continue;
 				}
 			}
 			//else if() Quantom is reached
+			//System.out.println("running line of code in pcb");
 			int statusCode=loadedPCB.runLine(); //runs a line of code and returns state of PCB, We could change the code to use this
+			//System.out.println("checking if loadedPCB is completed");
 			if(loadedPCB.completed()){
+			//	System.out.println("pcb is finished");
 				myOS.completeProcess(popLoadedPCB());
 			}
 			else if(loadedPCB.blocked()){
+				//System.out.println("pcb burst is finished");
 				myOS.cpuBlockedQHandOff(popLoadedPCB());
 			}
 			
 
 			/*//checking if ReadyQueue is empty or not
 			if (!myReadyQueue.isEmpty()){
-				// System.out.println("(!myReadyQueue.isEmpty())");
+				// //System.out.println("(!myReadyQueue.isEmpty())");
 				PCB currentPCB = myReadyQueue.dequeue();
 				int currentCPUBurst = currentPCB.getCurrentCPUBurst();
 				//checking if current CPUBurst is the last CPUBurst or not
 				if (currentCPUBurst >= currentPCB.getTotalCPUBursts()){
 					
-					System.out.println("(currentCPUBurst >= currentPCB.getTotalCPUBursts()");
-					//System.out.println("myReadyQueue"+myReadyQueue);
-					//System.out.println("myBlockedQueue"+myBlockedQueue);
-					//System.out.println(myJobQueue.isEmpty());
+					//System.out.println("(currentCPUBurst >= currentPCB.getTotalCPUBursts()");
+					////System.out.println("myReadyQueue"+myReadyQueue);
+					////System.out.println("myBlockedQueue"+myBlockedQueue);
+					////System.out.println(myJobQueue.isEmpty());
 					if (myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty()){
-						System.out.println("myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty())");
+						//System.out.println("myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty())");
 					}
 					else if (myReadyQueue.isEmpty() && !myJobQueue.isEmpty()){
-						System.out.println("(myReadyQueue.isEmpty() && !myJobQueue.isEmpty())");
+						//System.out.println("(myReadyQueue.isEmpty() && !myJobQueue.isEmpty())");
 						myReadyQueue.enqueue(myJobQueue.getNextJob());
 						currentPCB = myReadyQueue.dequeue();
 						currentCPUBurst = currentPCB.getCurrentCPUBurst();
@@ -105,25 +114,25 @@ public class CPU {
 					}
 				}
 				if (currentCPUBurst < currentPCB.getTotalCPUBursts()){
-					System.out.println("(currentCPUBurst < currentPCB.getTotalCPUBursts())");
+					//System.out.println("(currentCPUBurst < currentPCB.getTotalCPUBursts())");
 					cycle += currentPCB.getCPUBursts()[currentCPUBurst];
 					currentPCB.setCurrentCPUBurst(currentCPUBurst+1);
 				
 					
 					if (currentPCB.getCurrentCPUBurst() >= currentPCB.getTotalCPUBursts()){
-						System.out.println("(currentCPUBurst >= currentPCB.getTotalCPUBursts()");
+						//System.out.println("(currentCPUBurst >= currentPCB.getTotalCPUBursts()");
 						
 						
-						System.out.println("myReadyQueue"+myReadyQueue);
-						System.out.println("myBlockedQueue"+myBlockedQueue);
-						System.out.println(myJobQueue.isEmpty());
+						//System.out.println("myReadyQueue"+myReadyQueue);
+						//System.out.println("myBlockedQueue"+myBlockedQueue);
+						//System.out.println(myJobQueue.isEmpty());
 						
 						if (myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty()){
-							System.out.println("myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty())");
+							//System.out.println("myReadyQueue.isEmpty() && myJobQueue.isEmpty() && myBlockedQueue.isEmpty())");
 							return;
 						}
 						else if (myReadyQueue.isEmpty() && !myJobQueue.isEmpty()){
-							System.out.println("(myReadyQueue.isEmpty() && !myJobQueue.isEmpty())");
+							//System.out.println("(myReadyQueue.isEmpty() && !myJobQueue.isEmpty())");
 							myReadyQueue.enqueue(myJobQueue.getNextJob());
 							currentPCB = myReadyQueue.dequeue();
 							currentCPUBurst = currentPCB.getCurrentCPUBurst();
@@ -143,9 +152,9 @@ public class CPU {
 					myBlockedQueue.enqueue(currentPCB);
 					myBlockedQueue.BlockedTimer(cycle,myReadyQueue);
 				
-					System.out.println("\nAfter time cycle of "+cycle);
-					System.out.println("printing myReadyQueue: "+myReadyQueue);
-					System.out.println("printing myBlockedQueue: "+myBlockedQueue);
+					//System.out.println("\nAfter time cycle of "+cycle);
+					//System.out.println("printing myReadyQueue: "+myReadyQueue);
+					//System.out.println("printing myBlockedQueue: "+myBlockedQueue);
 				}
 			}
 			if (myReadyQueue.isEmpty() && !myBlockedQueue.isEmpty()){
@@ -154,5 +163,6 @@ public class CPU {
 				myBlockedQueue.BlockedTimer(cycle,myReadyQueue);
 			}*/
 		}
+		System.out.println("Program complete");
 	}
 }

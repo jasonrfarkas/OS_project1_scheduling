@@ -15,6 +15,10 @@ public class PCB {
 	private int remainingInCurrentBurst;
 	//private int blockedStartTime;
 	//private int blockedEndTime;
+	public int getArrivalTime(){
+		return arrivalTime;
+	}
+
 	public void connectCPU(CPU c){
 		connectedCPU = c;
 	}
@@ -43,14 +47,17 @@ public class PCB {
 		simulatedPc=0;
 		
 		cycleCounter = 0;
+		currentCPUBurst = 0;
 		// blockedStartTime = 0;
 		// blockedEndTime = 0;
 		
 		
 		totalCPUBursts = Integer.valueOf(tempArray[2]);
+		//System.out.println("totalCPUBursts= " +totalCPUBursts);
 		CPUBursts = new int [totalCPUBursts];
 		for (int i = 0; i<totalCPUBursts; i++){
 			CPUBursts[i] = Integer.valueOf(tempArray[i+3]);
+		//	System.out.println("CPUBursts[i]= " + CPUBursts[i] + " i =" + i);
 		}
 		remainingInCurrentBurst = getCurrentCPUBurstLength();
 	}
@@ -145,9 +152,9 @@ public class PCB {
 		}
 	}
 
-	private void increasePC(){
+	private void increasePC(){ 
 		setSimulated_pc(getSimulated_pc()+1);
-		setTotalCPUBursts(getTotalCPUBursts()+1);
+		setCurrentCPUBurst(getCurrentCPUBurst()+1);
 		setRemainingInCurrentBurst(getRemainingInBurst()-1);
 		if( getRemainingInBurst() <= 0 ){
 			this.increaseBurst();
@@ -204,7 +211,7 @@ public class PCB {
 		return totalCPUBursts;
 	}
 
-	public void setTotalCPUBursts(int totalCPUBursts) {
+	private void setTotalCPUBursts(int totalCPUBursts) {
 		this.totalCPUBursts = totalCPUBursts;
 	}
 
@@ -225,7 +232,15 @@ public class PCB {
 	}
 
 	public int getCurrentCPUBurstLength(){
-		return getCPUBursts()[getCurrentCPUBurst()];
+		//System.out.println("getCurrentCPUBurst() =  " + getCurrentCPUBurst());
+		//System.out.println("getTotalCPUBursts() =  " + getTotalCPUBursts());
+		if(getCurrentCPUBurst() < getTotalCPUBursts()){
+			return getCPUBursts()[getCurrentCPUBurst()];
+		}
+		else{
+			return getCPUBursts()[getTotalCPUBursts()-1];
+		}
+		
 	}
 
 	public int getRemainingInBurst(){
