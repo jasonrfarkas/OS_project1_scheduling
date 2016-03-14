@@ -36,7 +36,7 @@ public class JobQueue {
 	
 	public String dequeue() {
         if (isEmpty()) {
-        	System.out.println("All job has done.");
+        	///System.out.println("All job has done.");
             throw new NoSuchElementException();
         }
         String myString = head.myString;
@@ -53,13 +53,20 @@ public class JobQueue {
 	            count++;
 	        }
 	        return count;
-	    }
-	
+	 }
+
+	private PCB peekNextJob(){
+        return new PCB(this.head.myString);
+    } 
+
 	public PCB getNextJob(){
-		String myString = this.dequeue();
-		return new PCB(myString);
-		
-	
+		return new PCB(this.dequeue());
 	}
+
+    public boolean hasGivableJobs(int cpuTime){
+        //System.out.println("!isEmpty() is " + !isEmpty());
+        /////System.out.println("(peekNextJob().getArrivalTime() <= cpuTime) " + (peekNextJob().getArrivalTime() <= cpuTime));
+        return !isEmpty() && (peekNextJob().getArrivalTime() <= cpuTime);
+    }
         
 }
