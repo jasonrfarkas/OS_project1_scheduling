@@ -7,6 +7,7 @@ public class PCB {
 	private int[] CPUBursts; 
 	private int currentCPUBurst;
 	private int iOCompletionTime;
+	private CPU connectedCPU;
 
 	private int arrivalTime;
 	private int cycleCounter; // I think this is the same as the simulatedPc
@@ -14,7 +15,22 @@ public class PCB {
 	private int remainingInCurrentBurst;
 	//private int blockedStartTime;
 	//private int blockedEndTime;
-	
+	public void connectedCPU(CPU c){
+		connectedCPU = c;
+	}
+	public void disconnectCPU(){
+		connectedCPU = null;
+	}
+	public Boolean cpuConneted(){
+		return connectedCPU != null;
+	}
+	public int getCPUTime(){
+		if(cpuConneted()){
+			return connectedCPU.getCycle();
+		}
+		return -1;
+	}
+
 	public PCB(String jobDescription ){
 		
 		String []tempArray = jobDescription.split("\\s");
@@ -56,7 +72,7 @@ public class PCB {
 	}
 
 	public Boolean blocked() {
-		return this.getState() == "blocked" || getiOCompletionTime > 0;
+		return this.getState() == "blocked" ; //|| getiOCompletionTime > 0;
 	}
 
 	public Boolean running() {
@@ -81,7 +97,7 @@ public class PCB {
 		else if(state== null){
 			this.setState("ready");
 		}
-		else if(state== "ready"){
+		else if(state== "ready" && cpuConneted()){
 			this.setState("running");
 		}
 		else if(state == completed || this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
@@ -153,7 +169,7 @@ public class PCB {
 		else if(this.blocked()){
 			return 0;
 		}
-		else{
+		else if(cpuConneted()){
 			/*
 				Assuming this function is only called when pcb is on a cpu, 
 				If we have more time we should add functions to ensure it can only run if it is on a cpu	
@@ -166,9 +182,12 @@ public class PCB {
 			}
 			return 1;
 		}
+		else{
+			return -1;
+		}
 	}
 
-	public int ioWait(){ 
+/*	public int ioWait(){ 
 		//return 0 if waited succesfully returns -1 if it finished io, -2 if it wasn't in waiting mode
 		if(waiting()){
 			setiOCompletionTime(getiOCompletionTime()-1); 
@@ -179,7 +198,7 @@ public class PCB {
 			return 0;
 		}
 		return -2;
-	}
+	}*/
 
 	public int getTotalCPUBursts() {
 		return totalCPUBursts;
@@ -222,8 +241,7 @@ public class PCB {
 			setState("finished");
 		}
 		else{
-			setState("blocked");
-			setiOCompletionTime(10);
+			setWaitTime(10);
 			setRemainingInCurrentBurst(getCurrentCPUBurstLength());
 		}
 	}
@@ -240,12 +258,35 @@ public class PCB {
 		return iOCompletionTime;
 	}
 
-	public void setiOCompletionTime(int iOCompletionTime) {
+	private void setiOCompletionTime(int iOCompletionTime) {
 		if(iOCompletionTime >= 0){
 			iOCompletionTime = iOCompletionTime;
 		}
 	}
+
+	public void setWaitTime(int waitTime){
+		if(connectedCPU()){
+			setState("blocked");
+			setiOCompletionTime(getCPUTime() +waitTime);
+		}
+	}
 	
+	public int recheckIfWaiting(){
+		/*
+			Returns -1 if still waiting
+			Returns 0 if done waiting and in ready state
+			Returns -2 if the method should not have been called
+		*/
+		if(connectedCPU() && blocked() ){
+			if(getCPUTime() >= getiOCompletionTime()){
+				setState("ready");
+				setiOCompletionTime(0);
+				return 0;
+			}
+			return -1;
+		}
+		return -2;
+	}
 
 	
 /*	

@@ -79,30 +79,13 @@ public void BlockedTimer(int currentCycleTime, ReadyQueue myRQ){
 		System.out.println("inside Blockedtimer method of BlockedeQueue");
 		Node walker = this.head;
     	while (walker!= null){
-				
 			//System.out.println("iter.next().getBlockedEndTime() = "+iter.next().getBlockedEndTime());
 			//System.out.println("currentCycleTime = "+currentCycleTime);
-			
 			PCB current1 = head.pcb;
-			if (current1.getBlockedEndTime()<=currentCycleTime){
-				
-				System.out.println("inside if");
-				
-				
-				
-				//System.out.println(iter.next());
-				current1.setBlockedEndTime(0);
-				current1.setBlockedStartTime(0);
-				PCB current2 = this.dequeue();
-				myRQ.enqueue(current2);
-				 
-				 walker = walker.next;
-			}
-			else{ 
-				System.out.println("inside else");
-				walker = walker.next;
-				
-			}
+            while(curren1.recheckIfWaiting() == 0){ // If a pcb is done waiting it returns 0
+                myRQ.enqueue(this.dequeue());
+                walker = walker.next;
+            }
 		}
 	}
     
