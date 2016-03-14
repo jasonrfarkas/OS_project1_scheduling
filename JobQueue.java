@@ -54,12 +54,17 @@ public class JobQueue {
 	        }
 	        return count;
 	    }
-	
+
+	private PCB peekNextJob(){
+        return new PCB(this.dequeue());
+    } 
+
 	public PCB getNextJob(){
-		String myString = this.dequeue();
-		return new PCB(myString);
-		
-	
+		return new PCB(this.head.myString);
 	}
+
+    public boolean hasGivableJobs(){
+        return !isEmpty() && 
+    }
         
 }

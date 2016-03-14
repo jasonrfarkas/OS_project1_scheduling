@@ -21,7 +21,7 @@ public class PCB {
 	public void disconnectCPU(){
 		connectedCPU = null;
 	}
-	public Boolean cpuConneted(){
+	public boolean cpuConneted(){
 		return connectedCPU != null;
 	}
 	public int getCPUTime(){
@@ -67,19 +67,19 @@ public class PCB {
 		return state;
 	}
 
-	public Boolean ready() {
+	public boolean ready() {
 		return this.getState() == "ready";
 	}
 
-	public Boolean blocked() {
+	public boolean blocked() {
 		return this.getState() == "blocked" ; //|| getiOCompletionTime > 0;
 	}
 
-	public Boolean running() {
+	public boolean running() {
 		return this.getState() == "running";
 	}
 
-	public Boolean completed() {
+	public boolean completed() {
 		return this.getState() == "completed" || this.getCurrentCPUBurst() >= this.getTotalCPUBursts();
 	}
 

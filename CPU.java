@@ -3,41 +3,82 @@
 public class CPU {
 	private boolean available;
 	private int cycle;
+	private PCB loadedPCB;
+
     public CPU (){
     	setAvailable(true);
     	setCycle(0);
+    	loadedPCB = null;
     }
 	public boolean isAvailable() {
 		return available;
 	}
-	public void setAvailable(boolean available) {
-		this.available = available;
+	public int setLoadedPCB(PCB loadedPCB) {
+		if(isAvailable()){
+			this.loadedPCB = loadedPCB;
+			this.available = false;
+			return 0;
+		}
+		else{
+			return -1;
+		}
+	}
+	public PCB popLoadedPCB() {
+		// not sure what will happen if !isAvailable()
+		PCB returnPCB= loadedPCB;
+		loadedPCB = null;
+		this.available = false;
+		return returnPCB;
+	}
+
+	public PCB contextSwitch(PCB loadPCB) {
+		PCB returnPCB = popLoadedPCB();
+		setLoadedPCB(loadPCB)
+		return returnPCB;
 	}
 	
 	public int getCycle() {
 		return cycle;
 	}
-	public void setCycle(int cycle) {
+	private void setCycle(int cycle) {
 		this.cycle = cycle;
 	}
+	private void increaseCycle(){
+		setCycle(getCycle()+1);
+	}
 
-	public void Run(JobQueue myJobQueue, ReadyQueue myReadyQueue, BlockedQueue myBlockedQueue){
+	public void Run(JobQueue myJobQueue, ReadyQueue myReadyQueue, BlockedQueue myBlockedQueue, OS myOS){
 		System.out.println("inside Run method of CPU class");
 		System.out.println("After time cycle of "+cycle);
 		System.out.println("printing myReadyQueue: "+myReadyQueue);
 		System.out.println("printing myBlockedQueue: "+myBlockedQueue);
 		
-		
 		while(true){
+			if(isAvailable()){
+				myOS.refreshBlocked();
+				if(myOS.canPassPCBToCPU()){
+					setLoadedPCB(myOS.getNextReadyJob());
+				}
+				else{
+					increaseCycle();
+					continue;
+				}
+			}
+			//else if() Quantom is reached
+			int statusCode=loadedPCB.runLine(); //runs a line of code and returns state of PCB, We could change the code to use this
+			if(loadedPCB.completed()){
+				myOS.completeProcess(popLoadedPCB());
+			}
+			else if(loadedPCB.blocked()){
+				myOS.cpuBlockedQHandOff(popLoadedPCB());
+			}
 			
-			//checking if ReadyQueue is empty or not
+
+			/*//checking if ReadyQueue is empty or not
 			if (!myReadyQueue.isEmpty()){
-				
-				System.out.println("(!myReadyQueue.isEmpty())");
+				// System.out.println("(!myReadyQueue.isEmpty())");
 				PCB currentPCB = myReadyQueue.dequeue();
-				
 				int currentCPUBurst = currentPCB.getCurrentCPUBurst();
-				
 				//checking if current CPUBurst is the last CPUBurst or not
 				if (currentCPUBurst >= currentPCB.getTotalCPUBursts()){
 					
@@ -111,7 +152,7 @@ public class CPU {
 				int waitTime = myBlockedQueue.peek().getBlockedEndTime()-cycle;
 				cycle += waitTime;
 				myBlockedQueue.BlockedTimer(cycle,myReadyQueue);
-			}
+			}*/
 		}
 	}
 }
