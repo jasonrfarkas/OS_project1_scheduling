@@ -82,7 +82,7 @@ public void BlockedTimer(int currentCycleTime, ReadyQueue myRQ){
 			//System.out.println("iter.next().getBlockedEndTime() = "+iter.next().getBlockedEndTime());
 			//System.out.println("currentCycleTime = "+currentCycleTime);
 			PCB current1 = head.pcb;
-            while(curren1.recheckIfWaiting() == 0){ // If a pcb is done waiting it returns 0
+            while(current1.recheckIfWaiting() == 0){ // If a pcb is done waiting it returns 0
                 myRQ.enqueue(this.dequeue());
                 walker = walker.next;
             }

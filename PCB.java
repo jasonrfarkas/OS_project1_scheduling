@@ -15,7 +15,7 @@ public class PCB {
 	private int remainingInCurrentBurst;
 	//private int blockedStartTime;
 	//private int blockedEndTime;
-	public void connectedCPU(CPU c){
+	public void connectCPU(CPU c){
 		connectedCPU = c;
 	}
 	public void disconnectCPU(){
@@ -80,7 +80,7 @@ public class PCB {
 	}
 
 	public Boolean completed() {
-		return this.getState() == "completed" || this.getCurrentCPUBurst >= this.getTotalCPUBursts();
+		return this.getState() == "completed" || this.getCurrentCPUBurst() >= this.getTotalCPUBursts();
 	}
 
 	public void setState(String state) {
@@ -237,7 +237,7 @@ public class PCB {
 	}
 	private void increaseBurst(){
 		setCurrentCPUBurst(getCurrentCPUBurst()+1);
-		if(this.getCurrentCPUBurst >= this.getTotalCPUBursts()){
+		if(this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
 			setState("finished");
 		}
 		else{
@@ -265,7 +265,7 @@ public class PCB {
 	}
 
 	public void setWaitTime(int waitTime){
-		if(connectedCPU()){
+		if(cpuConneted()){
 			setState("blocked");
 			setiOCompletionTime(getCPUTime() +waitTime);
 		}
@@ -277,7 +277,7 @@ public class PCB {
 			Returns 0 if done waiting and in ready state
 			Returns -2 if the method should not have been called
 		*/
-		if(connectedCPU() && blocked() ){
+		if(cpuConneted() && blocked() ){
 			if(getCPUTime() >= getiOCompletionTime()){
 				setState("ready");
 				setiOCompletionTime(0);
