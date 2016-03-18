@@ -54,7 +54,7 @@ public class OS {
 		return (memoryCapacity-getMemory()) > 0;
 	}
 
-	public void jobQReadyQHandOff(){
+	public boolean jobQReadyQHandOff(){
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
 		//System.out.println("this.hasMemory()= " +this.hasMemory()); 
 		if(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
@@ -62,7 +62,9 @@ public class OS {
 			p.connectSystem(this);
 			myReadyQueue.enqueue(p);
 			increaseMemory();
+			return true;
 		}
+		return false;
 	}
 
 	public PCB getNextReadyJob(){
@@ -84,8 +86,12 @@ public class OS {
 		return !myReadyQueue.isEmpty() || (myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory());
 	}
 
-	public void cpuBlockedQHandOff(PCB process){
-		myBlockedQueue.enqueue(process);
+	public boolean cpuBlockedQHandOff(){
+		if(myCPU.getLoadedPCB().blocked()){
+			myBlockedQueue.enqueue(myCPU.popLoadedPCB());
+			return true;
+		}// Maybe this should then throw an error if not 
+		return false;
 	}
 	public void completeProcess(PCB process){
 		//print statistics

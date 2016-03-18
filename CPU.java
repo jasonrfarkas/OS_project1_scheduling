@@ -13,6 +13,9 @@ public class CPU {
 	public boolean isAvailable() {
 		return available;
 	}
+	public PCB getLoadedPCB(){
+		return loadedPCB;
+	}
 	public int setLoadedPCB(PCB loadedPCB) {
 		if(isAvailable()){
 			this.loadedPCB = loadedPCB;
@@ -79,7 +82,7 @@ public class CPU {
 			}
 			else if(loadedPCB.blocked()){
 				//System.out.println("pcb burst is finished");
-				myOS.cpuBlockedQHandOff(popLoadedPCB());
+				myOS.cpuBlockedQHandOff();
 			}
 			
 
