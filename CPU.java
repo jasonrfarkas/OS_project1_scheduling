@@ -13,6 +13,9 @@ public class CPU {
 	public boolean isAvailable() {
 		return available;
 	}
+	public PCB getLoadedPCB(){
+		return loadedPCB;
+	}
 	public int setLoadedPCB(PCB loadedPCB) {
 		if(isAvailable()){
 			this.loadedPCB = loadedPCB;
@@ -59,9 +62,10 @@ public class CPU {
 			//	System.out.println("space is availible");
 				myOS.refreshBlocked();
 			//	System.out.println("blockedQ is refreshed");
-				if(myOS.canPassPCBToCPU()){
+				if(myOS.readyQCPUHandoff()){
+					// the check has the side effect of working if it succeeded
 			//		System.out.println("Getting item fom readyQ");
-					setLoadedPCB(myOS.getNextReadyJob());
+					//setLoadedPCB(myOS.getNextReadyJob());
 				}
 				else{
 			//		System.out.println("no items to get from ready/jobQ");
@@ -79,7 +83,7 @@ public class CPU {
 			}
 			else if(loadedPCB.blocked()){
 				//System.out.println("pcb burst is finished");
-				myOS.cpuBlockedQHandOff(popLoadedPCB());
+				myOS.cpuBlockedQHandOff();
 			}
 			
 

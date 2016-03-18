@@ -54,7 +54,7 @@ public class OS {
 		return (memoryCapacity-getMemory()) > 0;
 	}
 
-	public void jobQReadyQHandOff(){
+	public boolean jobQReadyQHandOff(){
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
 		//System.out.println("this.hasMemory()= " +this.hasMemory()); 
 		if(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
@@ -62,10 +62,24 @@ public class OS {
 			p.connectSystem(this);
 			myReadyQueue.enqueue(p);
 			increaseMemory();
+			return true;
 		}
+		return false;
 	}
 
-	public PCB getNextReadyJob(){
+	public boolean readyQCPUHandoff(){
+		if(canPassPCBToCPU()){
+			while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
+				//System.out.println("handing off a job");
+				jobQReadyQHandOff();
+			}
+			myCPU.setLoadedPCB(myReadyQueue.dequeue());
+			return true;
+		}
+		return false;
+	}
+
+/*	public PCB getNextReadyJob(){
 		//System.out.println("entering while loop to check if job q has jobs");
 		//might change this to specifially call a cpu load function and hand it off the pcb
 		while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
@@ -78,14 +92,18 @@ public class OS {
 		//rPCB.connectSystem();
 		//System.out.println("returning pcb");
 		return rPCB;	
-	}
+	}*/
 
 	public boolean canPassPCBToCPU(){
 		return !myReadyQueue.isEmpty() || (myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory());
 	}
 
-	public void cpuBlockedQHandOff(PCB process){
-		myBlockedQueue.enqueue(process);
+	public boolean cpuBlockedQHandOff(){
+		if(myCPU.getLoadedPCB().blocked()){
+			myBlockedQueue.enqueue(myCPU.popLoadedPCB());
+			return true;
+		}// Maybe this should then throw an error if not 
+		return false;
 	}
 	public void completeProcess(PCB process){
 		//print statistics
