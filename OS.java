@@ -67,7 +67,19 @@ public class OS {
 		return false;
 	}
 
-	public PCB getNextReadyJob(){
+	public boolean readyQCPUHandoff(){
+		if(canPassPCBToCPU()){
+			while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
+				//System.out.println("handing off a job");
+				jobQReadyQHandOff();
+			}
+			myCPU.setLoadedPCB(myReadyQueue.dequeue());
+			return true;
+		}
+		return false;
+	}
+
+/*	public PCB getNextReadyJob(){
 		//System.out.println("entering while loop to check if job q has jobs");
 		//might change this to specifially call a cpu load function and hand it off the pcb
 		while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
@@ -80,7 +92,7 @@ public class OS {
 		//rPCB.connectSystem();
 		//System.out.println("returning pcb");
 		return rPCB;	
-	}
+	}*/
 
 	public boolean canPassPCBToCPU(){
 		return !myReadyQueue.isEmpty() || (myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory());
