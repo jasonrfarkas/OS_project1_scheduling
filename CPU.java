@@ -62,7 +62,7 @@ public class CPU {
 			//	System.out.println("space is availible");
 				myOS.refreshBlocked();
 			//	System.out.println("blockedQ is refreshed");
-				if(readyQCPUHandoff()){
+				if(myOS.readyQCPUHandoff()){
 					// the check has the side effect of working if it succeeded
 			//		System.out.println("Getting item fom readyQ");
 					//setLoadedPCB(myOS.getNextReadyJob());
