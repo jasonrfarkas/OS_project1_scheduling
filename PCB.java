@@ -10,7 +10,7 @@ public class PCB {
 	private CPU connectedCPU;
 
 	private int arrivalTime;
-	private int cycleCounter; // I think this is the same as the simulatedPc
+	//private int cycleCounter; // I think this is the same as the simulatedPc
 	private int completionTime; // Time when pcb job completed
 	private int remainingInCurrentBurst;
 	//private int blockedStartTime;
@@ -46,7 +46,7 @@ public class PCB {
 		setCurrentCPUBurst(0);
 		simulatedPc=0;
 		
-		cycleCounter = 0;
+		//cycleCounter = 0;
 		currentCPUBurst = 0;
 		// blockedStartTime = 0;
 		// blockedEndTime = 0;
@@ -154,7 +154,7 @@ public class PCB {
 
 	private void increasePC(){ 
 		setSimulated_pc(getSimulated_pc()+1);
-		setCurrentCPUBurst(getCurrentCPUBurst()+1);
+		//setCurrentCPUBurst(getCurrentCPUBurst()+1);
 		setRemainingInCurrentBurst(getRemainingInBurst()-1);
 		if( getRemainingInBurst() <= 0 ){
 			this.increaseBurst();
