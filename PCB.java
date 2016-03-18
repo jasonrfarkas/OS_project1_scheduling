@@ -7,7 +7,8 @@ public class PCB {
 	private int[] CPUBursts; 
 	private int currentCPUBurst;
 	private int iOCompletionTime;
-	private CPU connectedCPU;
+	//private CPU connectedCPU;
+	private OS system; 
 
 	private int arrivalTime;
 	//private int cycleCounter; // I think this is the same as the simulatedPc
@@ -19,18 +20,18 @@ public class PCB {
 		return arrivalTime;
 	}
 
-	public void connectCPU(CPU c){
-		connectedCPU = c;
+	public void connectSystem(OS s){
+		system = s;
 	}
-	public void disconnectCPU(){
-		connectedCPU = null;
+	//public void disconnectSystem(){
+	//	system = null;
+	//}
+	public boolean systemConneted(){
+		return system != null;
 	}
-	public boolean cpuConneted(){
-		return connectedCPU != null;
-	}
-	public int getCPUTime(){
-		if(cpuConneted()){
-			return connectedCPU.getCycle();
+	public int getSystemTime(){
+		if(systemConneted()){
+			return system.getCycle();
 		}
 		return -1;
 	}
@@ -104,7 +105,7 @@ public class PCB {
 		else if(state== null){
 			this.setState("ready");
 		}
-		else if(state== "ready" && cpuConneted()){
+		else if(state== "ready" && systemConneted()){
 			this.setState("running");
 		}
 		else if(state == completed || this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
@@ -176,7 +177,7 @@ public class PCB {
 		else if(this.blocked()){
 			return 0;
 		}
-		else if(cpuConneted()){
+		else if(systemConneted()){
 			/*
 				Assuming this function is only called when pcb is on a cpu, 
 				If we have more time we should add functions to ensure it can only run if it is on a cpu	
@@ -280,9 +281,9 @@ public class PCB {
 	}
 
 	public void setWaitTime(int waitTime){
-		if(cpuConneted()){
+		if(systemConneted()){
 			setState("blocked");
-			setiOCompletionTime(getCPUTime() +waitTime);
+			setiOCompletionTime(getSystemTime() +waitTime);
 		}
 	}
 	
@@ -292,8 +293,8 @@ public class PCB {
 			Returns 0 if done waiting and in ready state
 			Returns -2 if the method should not have been called
 		*/
-		if(cpuConneted() && blocked() ){
-			if(getCPUTime() >= getiOCompletionTime()){
+		if(systemConneted() && blocked() ){
+			if(getSystemTime() >= getiOCompletionTime()){
 				setState("ready");
 				setiOCompletionTime(0);
 				return 0;
