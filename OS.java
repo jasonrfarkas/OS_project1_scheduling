@@ -58,7 +58,9 @@ public class OS {
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
 		//System.out.println("this.hasMemory()= " +this.hasMemory()); 
 		if(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
-			myReadyQueue.enqueue(myJobQueue.getNextJob());
+			PCB p = myJobQueue.getNextJob();
+			p.connectSystem(this);
+			myReadyQueue.enqueue(p);
 			increaseMemory();
 		}
 	}
@@ -73,7 +75,7 @@ public class OS {
 		// System.out.println("dequeueing from readyQ");
 		PCB rPCB = myReadyQueue.dequeue();
 		// System.out.println("connecting cpu to pcb");
-		rPCB.connectCPU(myCPU);
+		//rPCB.connectSystem();
 		//System.out.println("returning pcb");
 		return rPCB;	
 	}
@@ -134,6 +136,10 @@ public class OS {
 		
 	}
 	
+	public int getCycle(){
+		return myCPU.getCycle();
+	}
+
 	public void run(){
 		// I want memory to be managed via the os so I need to change something here. 
 		myCPU.Run(myJobQueue, myReadyQueue, myBlockedQueue, this);
