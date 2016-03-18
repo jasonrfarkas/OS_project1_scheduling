@@ -66,6 +66,7 @@ public class CPU {
 					// the check has the side effect of working if it succeeded
 			//		System.out.println("Getting item fom readyQ");
 					//setLoadedPCB(myOS.getNextReadyJob());
+					System.out.println("Getting item fom readyQ to CPU");
 				}
 				else{
 			//		System.out.println("no items to get from ready/jobQ");
@@ -84,6 +85,7 @@ public class CPU {
 			else if(loadedPCB.blocked()){
 				//System.out.println("pcb burst is finished");
 				myOS.cpuBlockedQHandOff();
+				System.out.println("my current blockedQ "+myBlockedQueue);
 			}
 			
 

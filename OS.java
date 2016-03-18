@@ -70,8 +70,10 @@ public class OS {
 	public boolean readyQCPUHandoff(){
 		if(canPassPCBToCPU()){
 			while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
-				//System.out.println("handing off a job");
+				System.out.println("handing off a job");
 				jobQReadyQHandOff();
+				System.out.println("\nmy current readyQ"+myReadyQueue);
+				
 			}
 			myCPU.setLoadedPCB(myReadyQueue.dequeue());
 			return true;
@@ -142,14 +144,14 @@ public class OS {
 		}
 		
 		//System.out.println("handing off jobs to readyQ");	
-		while (myReadyQueue.size()<2 && myJobQueue.hasGivableJobs(myCPU.getCycle()) == true && this.hasMemory() == true){
+		while (jobQReadyQHandOff()){
 			//System.out.println("handing off a job");	
 			//System.out.println("myReadyQueue.size()= " +myReadyQueue.size());
 			//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " +myJobQueue.hasGivableJobs(myCPU.getCycle()) );
-			jobQReadyQHandOff();
+			
 		}	
 				
-		//System.out.println(myJobQueue.size());
+		//System.out.println("my Current ReadyQ"+ myReadyQueue);
 		////System.out.println("The size of this ready Q is "+(myReadyQueue).size());
 		
 	}
@@ -166,6 +168,7 @@ public class OS {
 
 	public boolean running(){
 		System.out.println("!myJobQueue.isEmpty() = " + !myJobQueue.isEmpty() + " getMemory() = " + getMemory());
+		
 		return !myJobQueue.isEmpty() || (getMemory() > 0);
 	}
 }
