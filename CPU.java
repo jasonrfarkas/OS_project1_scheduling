@@ -26,6 +26,7 @@ public class CPU {
 			return -1;
 		}
 	}
+	
 	public PCB popLoadedPCB() {
 		// not sure what will happen if !isAvailable()
 		PCB returnPCB= loadedPCB;
@@ -67,10 +68,12 @@ public class CPU {
 			//		System.out.println("Getting item fom readyQ");
 					//setLoadedPCB(myOS.getNextReadyJob());
 					System.out.println("Getting item fom readyQ to CPU");
+					System.out.println("current CPU cycle is  "+getCycle());
 				}
 				else{
 			//		System.out.println("no items to get from ready/jobQ");
 					increaseCycle();
+					System.out.println("inside else increase cycle: current CPU cycle is  "+getCycle());
 					continue;
 				}
 			}
