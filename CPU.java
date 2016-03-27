@@ -68,7 +68,8 @@ public class CPU {
 			//		System.out.println("Getting item fom readyQ");
 					//setLoadedPCB(myOS.getNextReadyJob());
 					System.out.println("Getting item fom readyQ to CPU");
-					System.out.println("current CPU cycle is  "+getCycle());
+					//increaseCycle();
+					
 				}
 				else{
 			//		System.out.println("no items to get from ready/jobQ");
@@ -80,6 +81,11 @@ public class CPU {
 			//else if() Quantom is reached
 			//System.out.println("running line of code in pcb");
 			int statusCode=loadedPCB.runLine(); //runs a line of code and returns state of PCB, We could change the code to use this
+			if (statusCode == 1){
+				increaseCycle();
+				System.out.println("current CPU cycle is  "+getCycle());
+			}
+				
 			//System.out.println("checking if loadedPCB is completed");
 			if(loadedPCB.completed()){
 			//	System.out.println("pcb is finished");
