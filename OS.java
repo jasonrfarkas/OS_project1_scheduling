@@ -167,8 +167,8 @@ public class OS {
 	}
 
 	public boolean running(){
-		System.out.println("!myJobQueue.isEmpty() = " + !myJobQueue.isEmpty() + " getMemory() = " + getMemory());
-		
+		// System.out.println("!myJobQueue.isEmpty() = " + !myJobQueue.isEmpty() + " getMemory() = " + getMemory());
+		// System.out.println("System is running");
 		return !myJobQueue.isEmpty() || (getMemory() > 0);
 	}
 }

@@ -166,8 +166,8 @@ public class PCB {
 		/*
 			This program simulates running a line of code in the program
 			It returns -2 if the program is already completed
-			It returns -1 if the program finishes after running the line
-			It returns 0 if the program can't run because it is still waiting for io
+			It returns -1 if the program can't run because it is still waiting for io
+			It returns 0 if the program finishes after running the line
 			It returns 1 if the program ran one line successfully
 			After running the line of code the state will be changed accordingly
 		*/
@@ -175,7 +175,7 @@ public class PCB {
 			return -2;
 		}
 		else if(this.blocked()){
-			return 0;
+			return -1;
 		}
 		else if(systemConneted()){
 			/*
@@ -187,12 +187,12 @@ public class PCB {
 			increasePC();
 			//assumeNextState();
 			if(this.completed()){
-				return -1;
+				return 0;
 			}
 			return 1;
 		}
 		else{
-			return -1;
+			return -3;
 		}
 	}
 
@@ -276,9 +276,11 @@ public class PCB {
 	}
 
 	private void setiOCompletionTime(int iOCompletionTime) {
+		System.out.println("setting io complete time to " +  iOCompletionTime);
 		if(iOCompletionTime >= 0){
-			iOCompletionTime = iOCompletionTime;
+			this.iOCompletionTime = iOCompletionTime;
 		}
+		System.out.println(" io complete time= " + this.iOCompletionTime );
 	}
 
 	public void setWaitTime(int waitTime){
