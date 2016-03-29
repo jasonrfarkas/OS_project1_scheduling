@@ -183,6 +183,7 @@ public class PCB {
 				If we have more time we should add functions to ensure it can only run if it is on a cpu	
 			*/
 			setState("running");
+		
 			increasePC();
 			//assumeNextState();
 			if(this.completed()){

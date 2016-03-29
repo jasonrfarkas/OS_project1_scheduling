@@ -26,6 +26,7 @@ public class CPU {
 			return -1;
 		}
 	}
+	
 	public PCB popLoadedPCB() {
 		// not sure what will happen if !isAvailable()
 		PCB returnPCB= loadedPCB;
@@ -66,16 +67,25 @@ public class CPU {
 					// the check has the side effect of working if it succeeded
 			//		System.out.println("Getting item fom readyQ");
 					//setLoadedPCB(myOS.getNextReadyJob());
+					System.out.println("Getting item fom readyQ to CPU");
+					//increaseCycle();
+					
 				}
 				else{
 			//		System.out.println("no items to get from ready/jobQ");
 					increaseCycle();
+					System.out.println("inside else increase cycle: current CPU cycle is  "+getCycle());
 					continue;
 				}
 			}
 			//else if() Quantom is reached
 			//System.out.println("running line of code in pcb");
 			int statusCode=loadedPCB.runLine(); //runs a line of code and returns state of PCB, We could change the code to use this
+			if (statusCode == 1){
+				increaseCycle();
+				System.out.println("current CPU cycle is  "+getCycle());
+			}
+				
 			//System.out.println("checking if loadedPCB is completed");
 			if(loadedPCB.completed()){
 			//	System.out.println("pcb is finished");
@@ -84,6 +94,7 @@ public class CPU {
 			else if(loadedPCB.blocked()){
 				//System.out.println("pcb burst is finished");
 				myOS.cpuBlockedQHandOff();
+				System.out.println("my current blockedQ "+myBlockedQueue);
 			}
 			
 
