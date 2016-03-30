@@ -16,6 +16,21 @@ public class Scheduler{
 		}	
 	}
 
+	public int getSchedulingAlgorithmNumber(){
+		return schedulingAlgorithmNumber;
+	}
+
+	public String getSchedulingAlgorithm(){
+		switch(schedulingAlgorithmNumber){
+			case (1):{
+				return "First come First Serve";
+			}
+			default:{
+				return "No Algorithm chosen";
+			}
+		}
+	}
+
 	public static LinkedList sortOneList(LinkedList unsorted){
 		
 		LinkedList sorted = new LinkedList();
