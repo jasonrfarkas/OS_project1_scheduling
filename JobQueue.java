@@ -4,7 +4,6 @@ import java.util.NoSuchElementException;
 
 public class JobQueue {
 	
-	
 	private class Node {
         public String myString;
         public Node next;
