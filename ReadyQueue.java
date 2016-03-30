@@ -1,5 +1,5 @@
 
-public class ReadyQueue extends LinkedList{
+public class ReadyQueue extends Queue{
      
 /*    public String toString(){
     	
