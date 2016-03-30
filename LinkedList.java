@@ -20,23 +20,18 @@ public class LinkedList {
     public void SJFinsert(PCB myPCB){
         
         Node myNode = new Node(myPCB, null);
-        Node walker = this.head;
-        
-        
+        Node walker = this.head;  
         if (isEmpty()) {
-            this.head = myNode;
-           
+            this.head = myNode;  
         } 
         
         else{ 
         	while(walker.getNext() != null && Integer.valueOf(myNode.getPcb().getRemainingInBurst()) > Integer.valueOf(walker.getNext().getPcb().getRemainingInBurst())) {
-        		
         		walker = walker.getNext();
         	}
     
         	myNode.setNext(walker.getNext());
         	walker.setNext(myNode);
-     
         }
        
     }
@@ -45,14 +40,14 @@ public class LinkedList {
   //takes an unsorted linked list and returns a sorted linked list
   	public LinkedList SJFsortOneList(LinkedList unsorted){
   		
-  		//LinkedList sorted = new LinkedList();
+  		LinkedList sorted = new LinkedList();
   		Node walker = unsorted.head;
   		
   		while(walker!=null){
-  			this.SJFinsert(walker.getPcb());
+  			sorted.SJFinsert(walker.getPcb());
   			walker = walker.getNext();
   		}
-  		return this;
+  		return sorted;
   	}
     
     public String toString(){

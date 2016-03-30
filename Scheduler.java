@@ -91,18 +91,43 @@ public class Scheduler{
 	}
 
 	
-	
+	public static LinkedList SJFgarunteedSortTwoList(LinkedList unsorted1, LinkedList unsorted){
+		LinkedList sorted = new SJFsortOneList(unsorted1);
+		return SJFsortTwoList(sorted, unsorted); 
+
+/*		Node walker = unsorted.head;
+		while(walker!=null){
+			sorted.SJFsortOneList(unsorted);
+			walker = walker.getNext();
+		}
+		return sorted;*/
+	}
+
 	//takes one unsorted linked list and one sorted linked list; then returns a sorted linked list
 	public static LinkedList SJFsortTwoList(LinkedList sorted, LinkedList unsorted){
 		
 		Node walker = unsorted.head;
-		
 		while(walker!=null){
-			sorted.SJFsortOneList(unsorted);
+			sorted.SJFinsert(walker.getPcb());
+			//sorted.SJFsortOneList(unsorted);
 			walker = walker.getNext();
 		}
 		return sorted;
 	}
 	
+	 //takes an unsorted linked list and returns a sorted linked list
+  	public LinkedList SJFsortOneList(LinkedList unsorted){
+  		
+  		LinkedList sorted = new LinkedList();
+  		return SJFsortTwoList(sorted, unsorted);
+/*
+  		Node walker = unsorted.head;
+  		
+  		while(walker!=null){
+  			sorted.SJFinsert(walker.getPcb());
+  			walker = walker.getNext();
+  		}
+  		return sorted;*/
+  	}
 	
 }
