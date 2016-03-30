@@ -9,6 +9,7 @@ public class OS {
 	private CPU myCPU;
 	private ReadyQueue myReadyQueue;
 	private BlockedQueue myBlockedQueue;
+	private Scheduler myScheduler;
 
 	private int completedJobsNumber;
 
@@ -28,6 +29,20 @@ public class OS {
 		myCPU = new CPU();
 		myReadyQueue = new ReadyQueue();
 		myBlockedQueue = new BlockedQueue();
+		myScheduler = new Scheduler();
+		memory = 0;
+		memoryCapacity = 10;
+		loadJobs(filename);
+		run();
+	}
+
+	public OS(String filename, int schedulingAlgorithmNumber){
+		completedJobsNumber = 0;
+		myJobQueue = new JobQueue();
+		myCPU = new CPU();
+		myReadyQueue = new ReadyQueue();
+		myBlockedQueue = new BlockedQueue();
+		myScheduler = new Scheduler(schedulingAlgorithmNumber);
 		memory = 0;
 		memoryCapacity = 10;
 		loadJobs(filename);
@@ -126,6 +141,16 @@ public class OS {
 		//print statistics
 		decreaseMemory();
 		completedJobsNumber +=1;
+		printJobCompleteInfo(process);
+	}
+
+	private void printJobCompleteInfo(PCB job){
+		System.out.println("\nPrint completed Job Stats: ");
+		System.out.println("JobID: " + job.getJobId() );
+		System.out.println("ArrivalTime: " + job.getArrivalTime() );
+		System.out.println("Completion Time: " + job.getCompletionTime());
+		System.out.println("Processing Time: " + job.getTotalProcessTime() );
+		System.out.println("Turnaround Time: " + (job.getCompletionTime()-job.getArrivalTime()) );
 	}
 
 	public int getCompletedJobsNumber(){
@@ -188,7 +213,23 @@ public class OS {
 	public void run(){
 		// I want memory to be managed via the os so I need to change something here. 
 		myCPU.Run(myJobQueue, myReadyQueue, myBlockedQueue, this);
+		printFinalInfo();
 		//System.out.println(myBlockedQueue);
+	}
+
+	public void printFinalInfo(){
+		System.out.println("\n\n\nPrint OS Stats: ");
+		System.out.println("Scheduling Algorithm Used: "+ );
+		System.out.println("Final CPU Clock: " );
+		System.out.println("AVG processing time: ");
+		System.out.println("AVG waiting time: ");
+		System.out.println("AVG turnaround time: ");
+
+		o scheduling algorithm used 
+		o current CPU clock value 
+		o average processing time 
+		o average waiting time
+		o average turnaround time
 	}
 
 	public boolean running(){
