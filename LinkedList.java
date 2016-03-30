@@ -1,5 +1,8 @@
 public class LinkedList {
 
+    protected Node head = null;
+    protected Node tail = null;
+
     public boolean isEmpty() {
         return head == null;
     }

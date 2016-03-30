@@ -2,8 +2,6 @@ import java.util.NoSuchElementException;
 
 
 public class Queue extends LinkedList {
-    protected Node head = null;
-    protected Node tail = null;
 
     public void enqueue(PCB myPCB) {
         Node newNode = new Node(myPCB, null);
