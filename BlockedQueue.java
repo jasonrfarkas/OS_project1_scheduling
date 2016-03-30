@@ -17,13 +17,11 @@ public class BlockedQueue {
     public void enqueue(PCB myPCB) {
         Node newNode = new Node(myPCB, null);
         if (isEmpty()) {
-        	newNode.pcb.setState("blocked");
         	head = newNode;
         	
         } 
         
         else {
-        	newNode.pcb.setState("ready");
         	tail.next = newNode;
         	
         }
@@ -75,15 +73,19 @@ public class BlockedQueue {
     }
     
     public void blockedTimer(ReadyQueue myRQ){/*int currentCycleTime,*/
-		
+		System.out.println(" BlockedeQueue string:" +this.toString());
+
 		System.out.println("inside Blockedtimer method of BlockedeQueue + size:" +size());
 
         int counter= 0;
 		Node walker = this.head;
+        //System.out.println("walker!= null: " +(walker!= null));
+        //System.out.println("walker.pcb.recheckIfWaiting(): " +(walker.pcb.recheckIfWaiting()));
     	while (walker!= null && walker.pcb.recheckIfWaiting() == 0){
             System.out.println("counter: " + counter);
             myRQ.enqueue(this.dequeue());
-            walker = walker.next;
+            // walker = walker.next;
+            walker = this.head;
 			//System.out.println("iter.next().getBlockedEndTime() = "+iter.next().getBlockedEndTime());
 			//System.out.println("currentCycleTime = "+currentCycleTime);
 		//	PCB current1 = head.pcb;

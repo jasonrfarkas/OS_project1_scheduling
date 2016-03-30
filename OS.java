@@ -106,6 +106,7 @@ public class OS {
 	public boolean cpuBlockedQHandOff(){
 		System.out.println("unloading pcb ");
 		if(myCPU.getLoadedPCB().blocked()){
+			System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
 			myBlockedQueue.enqueue(myCPU.popLoadedPCB());
 			return true;
 		}// Maybe this should then throw an error if not

@@ -288,10 +288,10 @@ public class PCB {
 	}
 
 	public void setWaitTime(int waitTime){
-		// System.out.println(" \n\nmaking pcb wait" + getSystemTime() );
+		System.out.println(" \n\nmaking pcb wait" + getSystemTime() );
 		if(systemConneted()){
 			setState("blocked");
-			// System.out.println(" making pcb wait" + getSystemTime() );
+			System.out.println("state now blocked");
 			setiOCompletionTime(getSystemTime()+1 +waitTime ); //must account for the current cycle
 		}
 	}
@@ -302,6 +302,7 @@ public class PCB {
 			Returns 0 if done waiting and in ready state
 			Returns -2 if the method should not have been called
 		*/
+
 		System.out.println(" connected: " + systemConneted() +  "blocked() :"+ blocked() );
 		if(systemConneted() && blocked() ){
 			System.out.println(" checking pcb's time. getSystemTime:" + getSystemTime() + " >= iOCompletionTime:" + iOCompletionTime );
@@ -309,11 +310,14 @@ public class PCB {
 				setState("ready");
 				setiOCompletionTime(0);
 				// System.out.println("true");
+				System.out.println("walker.pcb.recheckIfWaiting(): " +(0)  + "state: " + state);
 				return 0;
 			}
+			System.out.println("walker.pcb.recheckIfWaiting(): " +(-1)  + "state: " + state);
 			// System.out.println(" false");
 			return -1;
 		}
+		System.out.println("walker.pcb.recheckIfWaiting(): " +(-2) + "state: " + state);
 		return -2;
 	}
 

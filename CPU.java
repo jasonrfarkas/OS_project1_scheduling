@@ -33,6 +33,7 @@ public class CPU {
 		PCB returnPCB= loadedPCB;
 		loadedPCB = null;
 		this.available = true;
+		System.out.println("in pop: pcb: " + returnPCB.toString());
 		return returnPCB;
 	}
 
