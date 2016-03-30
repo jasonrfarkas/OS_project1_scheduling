@@ -1,7 +1,7 @@
 
 public class ReadyQueue extends LinkedList{
      
-    public String toString(){
+/*    public String toString(){
     	
     	String myString ="";
     	Node walker = this.head;
@@ -10,6 +10,7 @@ public class ReadyQueue extends LinkedList{
     		walker = walker.getNext();
     	}
     	return myString;
-    }
+    }*/
     
 }
+

@@ -81,7 +81,7 @@ public class OS {
 	public boolean readyQCPUHandoff(){
 		if(canPassPCBToCPU()){
 			while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
-				System.out.println("handing off a job");
+				// System.out.println("handing off a job");
 				jobQReadyQHandOff();
 				//System.out.println("\nmy current readyQ"+myReadyQueue);
 				
@@ -112,13 +112,13 @@ public class OS {
 	}
 
 	public boolean cpuBlockedQHandOff(){
-		System.out.println("unloading pcb ");
+	//	System.out.println("unloading pcb ");
 		if(myCPU.getLoadedPCB().blocked()){
-			System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
+		//	System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
 			myBlockedQueue.enqueue(myCPU.popLoadedPCB());
 			return true;
 		}// Maybe this should then throw an error if not
-		System.out.println("ERROR unloading pcb "); 
+		// System.out.println("ERROR unloading pcb "); 
 		return false;
 	}
 
