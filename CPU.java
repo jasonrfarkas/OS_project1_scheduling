@@ -4,6 +4,7 @@ public class CPU {
 	private boolean available;
 	private int cycle;
 	private PCB loadedPCB;
+	OS myOS;
 
     public CPU (){
     	available = true;
@@ -33,6 +34,7 @@ public class CPU {
 		PCB returnPCB= loadedPCB;
 		loadedPCB = null;
 		this.available = true;
+		myOS.resetQuantom();
 		//System.out.println("in pop: pcb: " + returnPCB.toString());
 		return returnPCB;
 	}
@@ -58,6 +60,7 @@ public class CPU {
 	}
 
 	public void Run(JobQueue myJobQueue, ReadyQueue myReadyQueue, BlockedQueue myBlockedQueue, OS myOS){
+		this.myOS = myOS;
 		//System.out.println("inside Run method of CPU class");
 		//System.out.println("After time cycle of "+cycle);
 		//System.out.println("printing myReadyQueue: "+myReadyQueue);
@@ -88,7 +91,8 @@ public class CPU {
 					continue;
 				}
 			}
-			//else if() Quantom is reached
+			//This point will only be reached is there is a pcb in the CPU
+			myOS.premtiveCheck();
 			System.out.println("running line of code in pcb");
 			int statusCode=loadedPCB.runLine(); //runs a line of code and returns state of PCB, We could change the code to use this
 			if (statusCode > 0){
@@ -110,6 +114,5 @@ public class CPU {
 		}
 		System.out.println("Program complete");
 	}
-
 
 }

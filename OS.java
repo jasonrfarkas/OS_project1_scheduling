@@ -56,6 +56,20 @@ public class OS {
 		run();
 	}
 
+	public OS(String filename, int schedulingAlgorithmNumber, int quantomNumber){
+		completedJobsNumber = 0;
+		myJobQueue = new JobQueue();
+		myCPU = new CPU();
+		myReadyQueue = new ReadyQueue();
+		myBlockedQueue = new BlockedQueue();
+		myScheduler = new Scheduler(schedulingAlgorithmNumber, quantomNumber);
+		memory = 0;
+		memoryCapacity = 10;
+		loadJobs(filename);
+		run();
+	}
+
+
 	public int getMemory(){
 		return memory;
 	}
@@ -137,11 +151,41 @@ public class OS {
 	//	System.out.println("unloading pcb ");
 		if(myCPU.getLoadedPCB().blocked()){
 		//	System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
-			myBlockedQueue.enqueue(myCPU.popLoadedPCB());
+			myBlockedQueue.enqueue(releaseCPU());
 			return true;
 		}// Maybe this should then throw an error if not
 		// System.out.println("ERROR unloading pcb "); 
 		return false;
+	}
+
+	private PCB releaseCPU(){
+		refreshBlocked();
+		return myCPU.popLoadedPCB();
+	}
+
+	public boolean cpuReadyQQuantomHandOff(){
+		if(myCPU.getLoadedPCB().running()){
+			System.out.println("Quantom Reached ");
+		//	System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
+			myReadyQueue.enqueue(releaseCPU());
+			return readyQCPUHandoff();
+		}
+		return false;
+	}
+
+	public void premtiveCheck(){
+		myScheduler.quantomCheck(this);
+	}
+
+	/*public void quantomCheck(){
+		
+	}
+	public void upQuantomCounter(){
+		myScheduler.upQuantomCounter();
+	}
+	*/
+	public void resetQuantom(){
+		myScheduler.resetQuantom();
 	}
 
 	public void completeProcess(PCB process){
