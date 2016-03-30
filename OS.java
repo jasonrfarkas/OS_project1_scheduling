@@ -219,17 +219,17 @@ public class OS {
 
 	public void printFinalInfo(){
 		System.out.println("\n\n\nPrint OS Stats: ");
-		System.out.println("Scheduling Algorithm Used: "+ );
+		System.out.println("Scheduling Algorithm Used: " );
 		System.out.println("Final CPU Clock: " );
 		System.out.println("AVG processing time: ");
 		System.out.println("AVG waiting time: ");
 		System.out.println("AVG turnaround time: ");
 
-		o scheduling algorithm used 
-		o current CPU clock value 
-		o average processing time 
-		o average waiting time
-		o average turnaround time
+		//o scheduling algorithm used 
+		//o current CPU clock value 
+		//o average processing time 
+		//o average waiting time
+		//o average turnaround time
 	}
 
 	public boolean running(){
