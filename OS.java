@@ -95,7 +95,7 @@ public class OS {
 
 	public boolean jobQReadyQHandOff(){
 
-		LinkedList testList = new LinkedList();
+		//LinkedList testList = new LinkedList();
 		
 		
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
@@ -105,7 +105,7 @@ public class OS {
 			p.connectSystem(this);
 			myReadyQueue.enqueue(p);
 			
-			testList.insert(p, testList);
+			//testList.insert(p);
 			//System.out.println("here is my test list  >>>"+testList);
 			
 			increaseMemory();
