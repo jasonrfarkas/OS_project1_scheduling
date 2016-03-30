@@ -23,6 +23,14 @@ public class PCB {
 	public void connectSystem(OS s){
 		system = s;
 	}
+
+	public int getTotalProcessTime(){
+		int time = CPUBursts[0];
+		for(int i=1;i< totalCPUBursts;i++){
+			time += CPUBursts[i] + 10;
+		}
+		return time;
+	}
 	//public void disconnectSystem(){
 	//	system = null;
 	//}
@@ -260,6 +268,7 @@ public class PCB {
 		setCurrentCPUBurst(getCurrentCPUBurst()+1);
 		if(this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
 			setState("finished");
+			setCompletionTime(getSystemTime()); 
 		}
 		else{
 			setWaitTime(10);

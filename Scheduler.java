@@ -1,6 +1,21 @@
 
 public class Scheduler{
 	
+	private int schedulingAlgorithmNumber;
+
+	public Scheduler(){
+		schedulingAlgorithmNumber = 1;
+	}
+
+	public Scheduler(int schedulingAlgorithmNumber){
+		if(schedulingAlgorithmNumber > 0 && schedulingAlgorithmNumber < 2){
+			this.schedulingAlgorithmNumber = schedulingAlgorithmNumber;
+		}
+		else{
+			schedulingAlgorithmNumber = 1;
+		}	
+	}
+
 	public static LinkedList sortOneList(LinkedList unsorted){
 		
 		LinkedList sorted = new LinkedList();
