@@ -59,7 +59,7 @@ public class OS {
 
 	public boolean jobQReadyQHandOff(){
 
-		LinkedList testList = new LinkedList();
+		//LinkedList testList = new LinkedList();
 		
 		
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
@@ -68,8 +68,16 @@ public class OS {
 			PCB p = myJobQueue.getNextJob();
 			p.connectSystem(this);
 			myReadyQueue.enqueue(p);
+			ReadyQueue newR1 = new ReadyQueue();
+			ReadyQueue newR2 = new ReadyQueue();
 			
-			testList.insert(p, testList);
+			System.out.println("my ready queue before scheduling    "+myReadyQueue);
+			
+			newR2 = myReadyQueue.insert(p,newR1);
+			
+			System.out.println("my ready queue after insertung    "+newR2);
+			
+			//testList.insert(p, testList);
 			//System.out.println("here is my test list  >>>"+testList);
 			
 			increaseMemory();
