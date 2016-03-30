@@ -10,6 +10,8 @@ public class OS {
 	private ReadyQueue myReadyQueue;
 	private BlockedQueue myBlockedQueue;
 
+	private int completedJobsNumber;
+
 /*	public OS(){
 		myJobQueue = new JobQueue();
 		myCPU = new CPU();
@@ -21,9 +23,7 @@ public class OS {
 		run();
 	}*/
 	public OS(String filename){
-		
-		
-		
+		completedJobsNumber = 0;
 		myJobQueue = new JobQueue();
 		myCPU = new CPU();
 		myReadyQueue = new ReadyQueue();
@@ -112,17 +112,30 @@ public class OS {
 	}
 
 	public boolean cpuBlockedQHandOff(){
+		System.out.println("unloading pcb ");
 		if(myCPU.getLoadedPCB().blocked()){
+			System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
 			myBlockedQueue.enqueue(myCPU.popLoadedPCB());
 			return true;
-		}// Maybe this should then throw an error if not 
+		}// Maybe this should then throw an error if not
+		System.out.println("ERROR unloading pcb "); 
 		return false;
 	}
+
 	public void completeProcess(PCB process){
 		//print statistics
 		decreaseMemory();
+		completedJobsNumber +=1;
 	}
 
+	public int getCompletedJobsNumber(){
+		return completedJobsNumber;
+	}
+
+/*	private void setCompletedJobsNumber(int ){
+		return completedJobsNumber;
+	}
+*/
 	public void refreshBlocked(){
 		myBlockedQueue.blockedTimer(myReadyQueue);
 		// This works by having the blocked queue pass pcb's directly to the ready quequ, it should actually be that it passes them to the system first
@@ -183,6 +196,14 @@ public class OS {
 		// System.out.println("System is running");
 		return !myJobQueue.isEmpty() || (getMemory() > 0);
 	}
+
+	public void printStats(){
+		System.out.println("\n Printing statics: ");
+		System.out.println("Number of jobs in the readyQ: " + myReadyQueue.size());
+		System.out.println("Number of jobs in the blockedq: " + myBlockedQueue.size());
+		System.out.println("Number of completed jobs: " + getCompletedJobsNumber());
+	}
+	
 }
 
 
