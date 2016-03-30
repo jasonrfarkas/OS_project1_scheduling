@@ -21,6 +21,9 @@ public class OS {
 		run();
 	}*/
 	public OS(String filename){
+		
+		
+		
 		myJobQueue = new JobQueue();
 		myCPU = new CPU();
 		myReadyQueue = new ReadyQueue();
@@ -55,12 +58,20 @@ public class OS {
 	}
 
 	public boolean jobQReadyQHandOff(){
+
+		LinkedList testList = new LinkedList();
+		
+		
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
 		//System.out.println("this.hasMemory()= " +this.hasMemory()); 
 		if(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
 			PCB p = myJobQueue.getNextJob();
 			p.connectSystem(this);
 			myReadyQueue.enqueue(p);
+			
+			testList.insert(p, testList);
+			//System.out.println("here is my test list  >>>"+testList);
+			
 			increaseMemory();
 			return true;
 		}
@@ -72,7 +83,7 @@ public class OS {
 			while(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
 				System.out.println("handing off a job");
 				jobQReadyQHandOff();
-				System.out.println("\nmy current readyQ"+myReadyQueue);
+				//System.out.println("\nmy current readyQ"+myReadyQueue);
 				
 			}
 			myCPU.setLoadedPCB(myReadyQueue.dequeue());
@@ -127,6 +138,7 @@ public class OS {
 		this.myCPU = new CPU();
 		this.myReadyQueue = new ReadyQueue();
 		this.myBlockedQueue = new BlockedQueue();
+		
 		
 		try {
 			Scanner inFile = new Scanner(new FileReader(filename));
