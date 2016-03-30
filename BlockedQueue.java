@@ -2,16 +2,18 @@
 
 public class BlockedQueue extends Queue{
     
-    public void blockedTimer(ReadyQueue myRQ){/*int currentCycleTime,*/
+    public Queue filterBlockedQueue(Queue myQ){/*int currentCycleTime,*/
 		
          // System.out.println(" BlockedeQueue string:" +this.toString());
 		 // System.out.println("inside Blockedtimer method of BlockedeQueue + size:" +size());
 		Node walker = this.head;
     	while (walker!= null && walker.getPcb().recheckIfWaiting() == 0){
-            myRQ.enqueue(this.dequeue());
+            myQ.enqueue(this.dequeue());
             walker = walker.getNext();
 		}
         // System.out.println("ending Blockedtimer method of BlockedeQueue");
+        return myQ;
 	}
+
     
 }

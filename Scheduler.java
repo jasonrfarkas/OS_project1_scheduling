@@ -79,7 +79,7 @@ public class Scheduler{
 				return "First come First Serve";
 			}
 			case (2):{
-				return "UNSET SchedulingAlgorithm";
+				return "Shortest Job First";
 			}
 			case (3):{
 				return "Round Robin";
@@ -90,24 +90,28 @@ public class Scheduler{
 		}
 	}
 
-	public LinkedList sort(Queue main, Queue other){
+	public void sort(Queue main, Queue other){
 		switch(schedulingAlgorithmNumber){
 			case (1):{
-				return main.addToQue(other);
+				main.addToQue(other);
+				break;
 			}
 			case (2):{
-				return SJFgarunteedSortTwoList(main, add);
+				main.setAs(SJFgarunteedSortTwoList(main, other));
+				break;
 			}
 			case (3):{
-				return main.addToQue(other);
+				main.addToQue(other);
+				break;
 			}
 			default:{
-				return main.addToQue(other);
+				main.addToQue(other);
+				break;
 			}
 		}
 	}
 
-	public LinkedList sortedAdd(Queue main, PCB other){
+	public void sortedAdd(Queue main, PCB other){
 			switch(schedulingAlgorithmNumber){
 				case (1):{
 					main.enqueue(other);
@@ -128,8 +132,8 @@ public class Scheduler{
 			}
 		}
 	
-	public static LinkedList SJFgarunteedSortTwoList(LinkedList unsorted1, LinkedList unsorted){
-		LinkedList sorted = new SJFsortOneList(unsorted1);
+	public LinkedList SJFgarunteedSortTwoList(LinkedList unsorted1, LinkedList unsorted){
+		LinkedList sorted = SJFsortOneList(unsorted1);
 		return SJFsortTwoList(sorted, unsorted); 
 
 /*		Node walker = unsorted.head;
@@ -141,7 +145,7 @@ public class Scheduler{
 	}
 
 	//takes one unsorted linked list and one sorted linked list; then returns a sorted linked list
-	public static LinkedList SJFsortTwoList(LinkedList sorted, LinkedList unsorted){
+	public LinkedList SJFsortTwoList(LinkedList sorted, LinkedList unsorted){
 		
 		Node walker = unsorted.head;
 		while(walker!=null){

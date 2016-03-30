@@ -231,7 +231,7 @@ public class OS {
 */
 	public void refreshBlocked(){
 		Queue temp = new Queue();
-		myScheduler.sort(myReadyQueue, myBlockedQueue.blockedTimer(temp));
+		myScheduler.sort(myReadyQueue, myBlockedQueue.filterBlockedQueue(temp));
 		//myBlockedQueue.blockedTimer(myReadyQueue);
 		// This works by having the blocked queue pass pcb's directly to the ready quequ, it should actually be that it passes them to the system first
 		// we should also allow the passage of linked lists to the system.
@@ -289,13 +289,6 @@ public class OS {
 
 	public void printFinalInfo(){
 		System.out.println("\n\n\nPrint OS Stats: ");
-
-		System.out.println("Scheduling Algorithm Used: " );
-		System.out.println("Final CPU Clock: " );
-		System.out.println("AVG processing time: ");
-		System.out.println("AVG waiting time: ");
-		System.out.println("AVG turnaround time: ");
-
 		//o scheduling algorithm used 
 		//o current CPU clock value 
 		//o average processing time 
