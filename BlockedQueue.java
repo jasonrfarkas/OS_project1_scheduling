@@ -1,6 +1,6 @@
 
 
-public class BlockedQueue extends LinkedList{
+public class BlockedQueue extends Queue{
     
     public void blockedTimer(ReadyQueue myRQ){/*int currentCycleTime,*/
 		
