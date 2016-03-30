@@ -90,6 +90,43 @@ public class Scheduler{
 		}
 	}
 
+	public LinkedList sort(Queue main, Queue other){
+		switch(schedulingAlgorithmNumber){
+			case (1):{
+				return main.addToQue(other);
+			}
+			case (2):{
+				return SJFgarunteedSortTwoList(main, add);
+			}
+			case (3):{
+				return main.addToQue(other);
+			}
+			default:{
+				return main.addToQue(other);
+			}
+		}
+	}
+
+	public LinkedList sortedAdd(Queue main, PCB other){
+			switch(schedulingAlgorithmNumber){
+				case (1):{
+					main.enqueue(other);
+					break;
+				}
+				case (2):{
+					main.SJFinsert(other);
+					break;
+				}
+				case (3):{
+					main.enqueue(other);
+					break;
+				}
+				default:{
+					main.enqueue(other);
+					break;
+				}
+			}
+		}
 	
 	public static LinkedList SJFgarunteedSortTwoList(LinkedList unsorted1, LinkedList unsorted){
 		LinkedList sorted = new SJFsortOneList(unsorted1);

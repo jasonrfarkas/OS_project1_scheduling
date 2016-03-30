@@ -103,7 +103,8 @@ public class OS {
 		if(myJobQueue.hasGivableJobs(myCPU.getCycle()) && this.hasMemory()){
 			PCB p = myJobQueue.getNextJob();
 			p.connectSystem(this);
-			myReadyQueue.enqueue(p);
+			myScheduler.sortedAdd(myReadyQueue,p);
+			//myReadyQueue.enqueue(p); 
 			
 			//testList.insert(p);
 			//System.out.println("here is my test list  >>>"+testList);
@@ -167,7 +168,8 @@ public class OS {
 		if(myCPU.getLoadedPCB().running()){
 			System.out.println("Quantom Reached ");
 		//	System.out.println("unloading pcb job: " + myCPU.getLoadedPCB().toString() );
-			myReadyQueue.enqueue(releaseCPU());
+			//myReadyQueue.enqueue(releaseCPU());
+			myScheduler.sortedAdd(myReadyQueue,releaseCPU());
 			return readyQCPUHandoff();
 		}
 		return false;
@@ -228,7 +230,9 @@ public class OS {
 	}
 */
 	public void refreshBlocked(){
-		myBlockedQueue.blockedTimer(myReadyQueue);
+		Queue temp = new Queue();
+		myScheduler.sort(myReadyQueue, myBlockedQueue.blockedTimer(temp));
+		//myBlockedQueue.blockedTimer(myReadyQueue);
 		// This works by having the blocked queue pass pcb's directly to the ready quequ, it should actually be that it passes them to the system first
 		// we should also allow the passage of linked lists to the system.
 	}
