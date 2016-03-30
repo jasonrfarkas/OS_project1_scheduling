@@ -169,6 +169,7 @@ public class PCB {
 			It returns -1 if the program can't run because it is still waiting for io
 			It returns 0 if the program finishes after running the line
 			It returns 1 if the program ran one line successfully
+			It returns 2 if the program ran one line and finished the burst
 			After running the line of code the state will be changed accordingly
 		*/
 		if(this.completed()){ 
@@ -188,6 +189,9 @@ public class PCB {
 			//assumeNextState();
 			if(this.completed()){
 				return 0;
+			}
+			if(this.blocked()){
+				return 2;
 			}
 			return 1;
 		}
@@ -276,17 +280,19 @@ public class PCB {
 	}
 
 	private void setiOCompletionTime(int iOCompletionTime) {
-		System.out.println("setting io complete time to " +  iOCompletionTime);
+		// System.out.println("setting io complete time to " +  iOCompletionTime);
 		if(iOCompletionTime >= 0){
 			this.iOCompletionTime = iOCompletionTime;
 		}
-		System.out.println(" io complete time= " + this.iOCompletionTime );
+		// System.out.println(" io complete time= " + this.iOCompletionTime );
 	}
 
 	public void setWaitTime(int waitTime){
+		// System.out.println(" \n\nmaking pcb wait" + getSystemTime() );
 		if(systemConneted()){
 			setState("blocked");
-			setiOCompletionTime(getSystemTime() +waitTime);
+			// System.out.println(" making pcb wait" + getSystemTime() );
+			setiOCompletionTime(getSystemTime()+1 +waitTime ); //must account for the current cycle
 		}
 	}
 	
@@ -296,12 +302,16 @@ public class PCB {
 			Returns 0 if done waiting and in ready state
 			Returns -2 if the method should not have been called
 		*/
+		System.out.println(" connected: " + systemConneted() +  "blocked() :"+ blocked() );
 		if(systemConneted() && blocked() ){
+			System.out.println(" checking pcb's time. getSystemTime:" + getSystemTime() + " >= iOCompletionTime:" + iOCompletionTime );
 			if(getSystemTime() >= getiOCompletionTime()){
 				setState("ready");
 				setiOCompletionTime(0);
+				// System.out.println("true");
 				return 0;
 			}
+			// System.out.println(" false");
 			return -1;
 		}
 		return -2;
