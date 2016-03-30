@@ -95,7 +95,7 @@ public class OS {
 
 	public boolean jobQReadyQHandOff(){
 
-		LinkedList testList = new LinkedList();
+		//LinkedList testList = new LinkedList();
 		
 		
 		//System.out.println("myJobQueue.hasGivableJobs(myCPU.getCycle())= " + myJobQueue.hasGivableJobs(myCPU.getCycle()));
@@ -105,7 +105,7 @@ public class OS {
 			p.connectSystem(this);
 			myReadyQueue.enqueue(p);
 			
-			testList.insert(p, testList);
+			//testList.insert(p);
 			//System.out.println("here is my test list  >>>"+testList);
 			
 			increaseMemory();
@@ -285,11 +285,25 @@ public class OS {
 
 	public void printFinalInfo(){
 		System.out.println("\n\n\nPrint OS Stats: ");
+
+		System.out.println("Scheduling Algorithm Used: " );
+		System.out.println("Final CPU Clock: " );
+		System.out.println("AVG processing time: ");
+		System.out.println("AVG waiting time: ");
+		System.out.println("AVG turnaround time: ");
+
+		//o scheduling algorithm used 
+		//o current CPU clock value 
+		//o average processing time 
+		//o average waiting time
+		//o average turnaround time
+
 		System.out.println("Scheduling Algorithm Used: "+ myScheduler.getSchedulingAlgorithm());
 		System.out.println("Final CPU Clock: " + myCPU.getCycle() );
 		System.out.println("AVG processing time: " + (getSumJobProcessTime()/getCompletedJobsNumber()) );
 		System.out.println("AVG waiting time: "+ getSumJobWaitingTime()/getCompletedJobsNumber());
 		System.out.println("AVG turnaround time: "+ getSumJobTurnaroundTime()/getCompletedJobsNumber());
+
 	}
 
 	public boolean running(){
