@@ -12,6 +12,9 @@ public class OS {
 	private Scheduler myScheduler;
 
 	private int completedJobsNumber;
+	private int sumJobTurnaroundTime;
+	private int sumJobWaitingTime;
+	private int sumJobProcessTime;
 
 /*	public OS(){
 		myJobQueue = new JobQueue();
@@ -25,6 +28,10 @@ public class OS {
 	}*/
 	public OS(String filename){
 		completedJobsNumber = 0;
+		sumJobTurnaroundTime= 0;
+	 	sumJobWaitingTime= 0;
+		sumJobProcessTime= 0;
+
 		myJobQueue = new JobQueue();
 		myCPU = new CPU();
 		myReadyQueue = new ReadyQueue();
@@ -141,6 +148,8 @@ public class OS {
 		//print statistics
 		decreaseMemory();
 		completedJobsNumber +=1;
+		sumJobTurnaroundTime+= (process.getCompletionTime()-process.getArrivalTime());
+		sumJobProcessTime+= process.getTotalProcessTime();
 		printJobCompleteInfo(process);
 	}
 
@@ -155,6 +164,19 @@ public class OS {
 
 	public int getCompletedJobsNumber(){
 		return completedJobsNumber;
+	}
+	
+	public int getSumJobTurnaroundTime(){
+		return sumJobTurnaroundTime;
+	}
+
+	public int getSumJobWaitingTime(){
+		// returns the sum of the amount of time a process wasn't in i/o or on cpu and was in system
+		return sumJobTurnaroundTime - sumJobProcessTime;
+	}
+
+	public int getSumJobProcessTime(){
+		return sumJobProcessTime;
 	}
 
 /*	private void setCompletedJobsNumber(int ){
@@ -219,17 +241,11 @@ public class OS {
 
 	public void printFinalInfo(){
 		System.out.println("\n\n\nPrint OS Stats: ");
-		System.out.println("Scheduling Algorithm Used: "+ );
-		System.out.println("Final CPU Clock: " );
-		System.out.println("AVG processing time: ");
-		System.out.println("AVG waiting time: ");
-		System.out.println("AVG turnaround time: ");
-
-		o scheduling algorithm used 
-		o current CPU clock value 
-		o average processing time 
-		o average waiting time
-		o average turnaround time
+		System.out.println("Scheduling Algorithm Used: "+ myScheduler.getSchedulingAlgorithm());
+		System.out.println("Final CPU Clock: " + myCPU.getCycle() );
+		System.out.println("AVG processing time: " + (getSumJobProcessTime()/getCompletedJobsNumber()) );
+		System.out.println("AVG waiting time: "+ getSumJobWaitingTime()/getCompletedJobsNumber());
+		System.out.println("AVG turnaround time: "+ getSumJobTurnaroundTime()/getCompletedJobsNumber());
 	}
 
 	public boolean running(){
