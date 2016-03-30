@@ -345,7 +345,7 @@ public class PCB {
 	public String toString(){
 		String myString = "";
 		myString+="\n\nCurrent information of this PCB\n\n";
-		myString+="jobId = "+jobId+"\narrivalTime = "+arrivalTime+"\n simulatedPc = "+simulatedPc;
+		myString+="jobId = "+jobId+"\narrivalTime = "+arrivalTime+"\nsimulatedPc = "+simulatedPc;
 		
 		myString+="\ncurrentCPUBurst = "+currentCPUBurst+" \ntotalCPUBursts = "+totalCPUBursts+"\nCPUBursts : ";
 		for (int i = 0; i<totalCPUBursts; i++)
