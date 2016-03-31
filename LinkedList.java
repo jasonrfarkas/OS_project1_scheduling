@@ -1,12 +1,21 @@
+/*LinkedList class is used to implement Queues. This class has two Node variables as "head" and "tail"
+ * 
+ */
+
+
+
 public class LinkedList {
 
     protected Node head = null;
     protected Node tail = null;
 
+    
+    //This method returns true if the LinkedList is empty and returns false otherwise
     public boolean isEmpty() {
         return head == null;
     }
 
+    //This method 
     public int size() {
         int count = 0;
         for (Node node = head; node != null; node = node.getNext()) {

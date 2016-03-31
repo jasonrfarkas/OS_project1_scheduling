@@ -1,7 +1,11 @@
+/*ReadyQueue class extends from Queue class which extends from LinkedList class.
+*/
 
 public class ReadyQueue extends Queue{
-     
-/*    public String toString(){
+   /*
+    * This method can be used to print all the pcb informations that are in the ReadyQueue
+    * 
+   public String toString(){
     	
     	String myString ="";
     	Node walker = this.head;
@@ -10,7 +14,9 @@ public class ReadyQueue extends Queue{
     		walker = walker.getNext();
     	}
     	return myString;
-    }*/
+    }
+    
+    */
     
 }
 
