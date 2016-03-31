@@ -66,46 +66,73 @@ public class PCB {
 		remainingInCurrentBurst = getCurrentCPUBurstLength();
 	}
 
-	public int getJobId() {
-		return jobId;
+	public int getJobId() { return jobId; }
+	public String getState() { return state; }
+	public int getSimulated_pc(){ return simulatedPc; }
+	public int getTotalCPUBursts() { return totalCPUBursts; }
+	public int[] getCPUBursts() { return CPUBursts; }
+	public int getCurrentCPUBurst() { return currentCPUBurst; }
+	public int getRemainingInBurst(){ return remainingInCurrentBurst; }
+	public int getCompletionTime() { return completionTime; }
+	public int getiOCompletionTime() { return iOCompletionTime; }
+	public int getCurrentCPUBurstLength(){
+		if(getCurrentCPUBurst() < getTotalCPUBursts()){
+			return getCPUBursts()[getCurrentCPUBurst()];
+		}
+		else{
+			return getCPUBursts()[getTotalCPUBursts()-1];
+		}
 	}
 
-	public void setJobId(int jobId) {
-		this.jobId = jobId;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public boolean ready() {
-		return this.getState() == "ready";
-	}
-
-	public boolean blocked() {
-		return this.getState() == "blocked" ; 
-	}
-
-	public boolean running() {
-		return this.getState() == "running";
-	}
-
+	public void setJobId(int jobId) { this.jobId = jobId; }
+	public boolean ready() { return this.getState() == "ready"; }
+	public boolean blocked() { return this.getState() == "blocked" ; }
+	public boolean running() { return this.getState() == "running"; }
 	public boolean completed() {
 		return this.getState() == "completed" || this.getCurrentCPUBurst() >= this.getTotalCPUBursts();
 	}
 
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public int getSimulated_pc(){
-		return simulatedPc;
-	}
+	public void setState(String state) { this.state = state; }
+	private void setTotalCPUBursts(int totalCPUBursts) { this.totalCPUBursts = totalCPUBursts; }
+	public void setCPUBursts(int[] cPUBursts) { CPUBursts = cPUBursts; }
+	public void setCurrentCPUBurst(int currentCPUBurst) { this.currentCPUBurst = currentCPUBurst; }
+	private void setRemainingInCurrentBurst(int r){ this.remainingInCurrentBurst = r; }
+	public void setCompletionTime(int completionTime) { this.completionTime = completionTime; }
 
 	private void setSimulated_pc(int simulatedPc){
 		if(simulatedPc > this.simulatedPc){
 			this.simulatedPc = simulatedPc;
 		}
+	}
+
+	private void setiOCompletionTime(int iOCompletionTime) {
+		if(iOCompletionTime >= 0){
+			this.iOCompletionTime = iOCompletionTime;
+		}
+	}
+
+	public void setWaitTime(int waitTime){
+		if(systemConneted()){
+			setState("blocked");
+			setiOCompletionTime(getSystemTime()+1 +waitTime ); //must account for the current cycle
+		}
+	}
+	
+	public int recheckIfWaiting(){
+		/*
+			Returns -1 if still waiting
+			Returns 0 if done waiting and in ready state
+			Returns -2 if the method should not have been called
+		*/
+		if(systemConneted() && blocked() ){
+			if(getSystemTime() >= getiOCompletionTime()){
+				setState("ready");
+				setiOCompletionTime(0);
+				return 0;
+			}
+			return -1;
+		}
+		return -2;
 	}
 
 	private void increasePC(){ 
@@ -115,6 +142,19 @@ public class PCB {
 			this.increaseBurst();
 		}
 	}
+
+	private void increaseBurst(){
+		setCurrentCPUBurst(getCurrentCPUBurst()+1);
+		if(this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
+			setState("finished");
+			setCompletionTime(getSystemTime()); 
+		}
+		else{
+			setWaitTime(10);
+			setRemainingInCurrentBurst(getCurrentCPUBurstLength());
+		}
+	}
+	
 
 	public int runLine(){
 		/*
@@ -153,148 +193,6 @@ public class PCB {
 			return -3;
 		}
 	}
-
-/*	public int ioWait(){ 
-		//return 0 if waited succesfully returns -1 if it finished io, -2 if it wasn't in waiting mode
-		if(waiting()){
-			setiOCompletionTime(getiOCompletionTime()-1); 
-			if (getiOCompletionTime() <= 0){
-				setState("ready");
-				return -1;
-			}
-			return 0;
-		}
-		return -2;
-	}*/
-
-	public int getTotalCPUBursts() {
-		return totalCPUBursts;
-	}
-
-	private void setTotalCPUBursts(int totalCPUBursts) {
-		this.totalCPUBursts = totalCPUBursts;
-	}
-
-	public int[] getCPUBursts() {
-		return CPUBursts;
-	}
-
-	public void setCPUBursts(int[] cPUBursts) {
-		CPUBursts = cPUBursts;
-	}
-
-	public int getCurrentCPUBurst() {
-		return currentCPUBurst;
-	}
-
-	public void setCurrentCPUBurst(int currentCPUBurst) {
-		this.currentCPUBurst = currentCPUBurst;
-	}
-
-	public int getCurrentCPUBurstLength(){
-		
-		if(getCurrentCPUBurst() < getTotalCPUBursts()){
-			return getCPUBursts()[getCurrentCPUBurst()];
-		}
-		else{
-			return getCPUBursts()[getTotalCPUBursts()-1];
-		}
-		
-	}
-
-	public int getRemainingInBurst(){
-		return remainingInCurrentBurst;
-	}
-
-	private void setRemainingInCurrentBurst(int r){
-		this.remainingInCurrentBurst = r;
-	}
-	private void increaseBurst(){
-		setCurrentCPUBurst(getCurrentCPUBurst()+1);
-		if(this.getCurrentCPUBurst() >= this.getTotalCPUBursts()){
-			setState("finished");
-			setCompletionTime(getSystemTime()); 
-		}
-		else{
-			setWaitTime(10);
-			setRemainingInCurrentBurst(getCurrentCPUBurstLength());
-		}
-	}
-
-	public int getCompletionTime() {
-		return completionTime;
-	}
-
-	public void setCompletionTime(int completionTime) {
-		this.completionTime = completionTime;
-	}
-
-	public int getiOCompletionTime() {
-		return iOCompletionTime;
-	}
-
-	private void setiOCompletionTime(int iOCompletionTime) {
-		// System.out.println("setting io complete time to " +  iOCompletionTime);
-		if(iOCompletionTime >= 0){
-			this.iOCompletionTime = iOCompletionTime;
-		}
-		// System.out.println(" io complete time= " + this.iOCompletionTime );
-	}
-
-	public void setWaitTime(int waitTime){
-	//	System.out.println(" \n\nmaking pcb wait" + getSystemTime() );
-		if(systemConneted()){
-			setState("blocked");
-	//		System.out.println("state now blocked");
-			setiOCompletionTime(getSystemTime()+1 +waitTime ); //must account for the current cycle
-		}
-	}
-	
-	public int recheckIfWaiting(){
-		/*
-			Returns -1 if still waiting
-			Returns 0 if done waiting and in ready state
-			Returns -2 if the method should not have been called
-		*/
-
-	//	System.out.println(" connected: " + systemConneted() +  "blocked() :"+ blocked() );
-		if(systemConneted() && blocked() ){
-		//	System.out.println(" checking pcb's time. getSystemTime:" + getSystemTime() + " >= iOCompletionTime:" + iOCompletionTime );
-			if(getSystemTime() >= getiOCompletionTime()){
-				setState("ready");
-				setiOCompletionTime(0);
-				// System.out.println("true");
-		//		System.out.println("walker.pcb.recheckIfWaiting(): " +(0)  + "state: " + state);
-				return 0;
-			}
-	//		System.out.println("walker.pcb.recheckIfWaiting(): " +(-1)  + "state: " + state);
-			// System.out.println(" false");
-			return -1;
-		}
-	//	System.out.println("walker.pcb.recheckIfWaiting(): " +(-2) + "state: " + state);
-		return -2;
-	}
-
-	
-/*	
-	We should only be using iocompletion
-
-	public int getBlockedStartTime() {
-		return blockedStartTime;
-	}
-
-	public void setBlockedStartTime(int blockedStartTime) {
-		this.blockedStartTime = blockedStartTime;
-	}
-
-	public int getBlockedEndTime() {
-		return blockedEndTime;
-	}
-
-	public void setBlockedEndTime(int blockedEndTime) {
-		this.blockedEndTime = blockedEndTime;
-	}*/
-
 	
 	public String toString(){
 		String myString = "";
