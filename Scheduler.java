@@ -35,7 +35,13 @@ public class Scheduler{
 			preemptive = false;
 			if(schedulingAlgorithmNumber == 3){
 				preemptive = true;
-				quantomLimit = quantom;
+				if(quantom > 0){
+					quantomLimit = quantom;
+				}
+				else{
+					quantomLimit=10;
+				}
+				
 			}
 		}
 		else{
