@@ -27,6 +27,18 @@ public class LinkedList {
         if (isEmpty()) {
             this.head = myNode;  
         } 
+        else if (walker.getNext() == null ){
+        	if (Integer.valueOf(myNode.getPcb().getRemainingInBurst()) > Integer.valueOf(walker.getPcb().getRemainingInBurst())){
+        		walker.setNext(myNode);
+        	}
+        	else{
+        		myNode.setNext(walker);
+        		head = myNode;
+        	}
+        		
+        	
+        }
+        	
         else{ 
         	while(walker.getNext() != null && Integer.valueOf(myNode.getPcb().getRemainingInBurst()) > Integer.valueOf(walker.getNext().getPcb().getRemainingInBurst())) {
         		walker = walker.getNext();

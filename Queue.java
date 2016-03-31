@@ -3,7 +3,6 @@
  * dequeue method take out an element from the head of the queue 
  */
 
-
 import java.util.NoSuchElementException;
 
 public class Queue extends LinkedList {
