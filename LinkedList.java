@@ -1,8 +1,5 @@
 /*LinkedList class is used to implement Queues. This class has two Node variables as "head" and "tail"
- * 
  */
-
-
 
 public class LinkedList {
 
@@ -15,7 +12,7 @@ public class LinkedList {
         return head == null;
     }
 
-    //This method 
+    //This method returns the size of the LinkedList
     public int size() {
         int count = 0;
         for (Node node = head; node != null; node = node.getNext()) {

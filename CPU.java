@@ -1,118 +1,116 @@
+/*
+	This CPU class represents a central processing unit
+	Variables: 
+	- available : keeps track if there is a PCB in the CPU
+	- cycle: keep count of the current clock cycle
+	- loadedPCB: points to a PCB that is currently loaded in the CPU
+	- myOS: points to the OS that is controlling this CPU
 
+	Methods:
+	- Getters/Setters/constructor are self explanitory
+	- popLoadedPCB: returns the PCB in the system and sets availible to true
+	- Run: the main method of this class:
+		This method checks if it should run based on the OS
+		Prints out the current stats if the cycle is a multiple of 200
+		Sees if the CPU has a loaded PCB, if not it tries to get one, 
+		If the OS says it there are no ready ones then it just increments the cycle
+		If it gets one/ already has one it checks to see if the quantom is up - and 
+		the check method itself handles what should occur if that is the case
+		It tells the PCB to run a line of code - which will automatically update the PCB"s State
+		It then looks at the PCB's state and tells the OS to handle it occordingly
+		If then increments the Cycle and repeats
+
+*/
 
 public class CPU {
 	private boolean available;
 	private int cycle;
 	private PCB loadedPCB;
-	OS myOS;
+	private OS myOS;
 
     public CPU (){
     	available = true;
     	setCycle(0);
     	loadedPCB = null;
     }
-	public boolean isAvailable() {
-		return available;
-	}
-	public PCB getLoadedPCB(){
-		return loadedPCB;
-	}
+	public boolean isAvailable() { return available; }
+	public PCB getLoadedPCB(){ return loadedPCB; }
+	public int getCycle() { return cycle; }
+	private void setCycle(int cycle) { this.cycle = cycle; }
+	private void increaseCycle(){ setCycle(getCycle()+1); }
+	private void printStats(OS myOS){ myOS.printStats(); }
 	public int setLoadedPCB(PCB loadedPCB) {
 		if(isAvailable()){
 			this.loadedPCB = loadedPCB;
 			this.available = false;
 			return 0;
 		}
-		else{
-			return -1;
-		}
+		else{ return -1; }
 	}
 	
 	public PCB popLoadedPCB() {
-		// not sure what will happen if !isAvailable()
 		System.out.println("\n POPPING PCB");
 		PCB returnPCB= loadedPCB;
 		loadedPCB = null;
 		this.available = true;
 		myOS.resetQuantom();
-		//System.out.println("in pop: pcb: " + returnPCB.toString());
 		return returnPCB;
 	}
 
+	
+	public void Run(JobQueue myJobQueue, ReadyQueue myReadyQueue, BlockedQueue myBlockedQueue, OS myOS){
+		this.myOS = myOS;
+		increaseCycle();// So that it prints what happened every cycle
+		while(myOS.running()){
+			if(getCycle() %200 == 0 ){
+				printStats(myOS);
+			}
+			System.out.println("current CPU cycle is  "+getCycle());
+			if(isAvailable()){
+				// If ther cycle starts with noting loaded in the CPU
+				// Make sure anything meant to be out of the blockedQ is out
+				myOS.refreshBlocked();
+				if(myOS.readyQCPUHandoff()){ 
+					// If the OS loaded the CPU with a PCB
+					// System.out.println("Got item from readyQ to CPU");
+				}
+				else{
+					// System.out.println("No items to get from ready/jobQ");
+					increaseCycle();
+					continue;
+				}
+			}
+			// This point will only be reached is there is a pcb in the CPU
+			// Check if quantom is up, if not increase quantom counter in scheduler
+			myOS.premtiveCheck();
+
+			System.out.println("Running line of code in pcb");
+			loadedPCB.runLine(); 
+			// If after running the line of code... 
+			if(loadedPCB.blocked()){
+				System.out.println("\tPCB burst is finished");
+				// Have the OS deal with placing it in the blockedQ
+				myOS.cpuBlockedQHandOff(); 
+			}
+			else if(loadedPCB.completed()){
+				System.out.println("\t\tPCB is finished");
+				// Have the OS  deal with completing the process
+				myOS.completeProcess(popLoadedPCB());
+			}
+			// Increment the CPU cycle counter
+			increaseCycle();	
+		}
+		System.out.println("\nProgram complete");
+	}
+
+	/*
+	This function isn't used but represents what would occur in a contextSwitch
+	What happens in our project is contains more steps and classes so it doesn't
+	use this function
+	*/
 	public PCB contextSwitch(PCB loadPCB) {
 		PCB returnPCB = popLoadedPCB();
 		setLoadedPCB(loadPCB);
 		return returnPCB;
 	}
-	
-	public int getCycle() {
-		return cycle;
-	}
-	private void setCycle(int cycle) {
-		this.cycle = cycle;
-	}
-	private void increaseCycle(){
-		setCycle(getCycle()+1);
-	}
-
-	private void printStats(OS myOS){
-		myOS.printStats();
-	}
-
-	public void Run(JobQueue myJobQueue, ReadyQueue myReadyQueue, BlockedQueue myBlockedQueue, OS myOS){
-		this.myOS = myOS;
-		//System.out.println("inside Run method of CPU class");
-		//System.out.println("After time cycle of "+cycle);
-		//System.out.println("printing myReadyQueue: "+myReadyQueue);
-		//System.out.println("printing myBlockedQueue: "+myBlockedQueue);
-		increaseCycle();
-		while(myOS.running()){
-			if(getCycle() %200 == 0 ){
-				printStats(myOS);
-			}
-			//System.out.println("my os is running");
-			System.out.println("current CPU cycle is  "+getCycle());
-			if(isAvailable()){
-				System.out.println("space is availible");
-				myOS.refreshBlocked();
-			//	System.out.println("blockedQ is refreshed");
-				if(myOS.readyQCPUHandoff()){
-					// the check has the side effect of working if it succeeded
-			//		System.out.println("Getting item fom readyQ");
-					//setLoadedPCB(myOS.getNextReadyJob());
-					System.out.println("Got item from readyQ to CPU");
-					//increaseCycle();
-					
-				}
-				else{
-					System.out.println("no items to get from ready/jobQ");
-					increaseCycle();
-					// System.out.println("inside else increase cycle: current CPU cycle is  "+getCycle());
-					continue;
-				}
-			}
-			//This point will only be reached is there is a pcb in the CPU
-			myOS.premtiveCheck();
-			System.out.println("running line of code in pcb");
-			int statusCode=loadedPCB.runLine(); //runs a line of code and returns state of PCB, We could change the code to use this
-			if (statusCode > 0){
-			
-			}
-			//System.out.println("checking if loadedPCB is completed");
-			if(loadedPCB.blocked()){
-				System.out.println("pcb burst is finished");
-				myOS.cpuBlockedQHandOff();
-				// System.out.println("my current blockedQ "+myBlockedQueue);
-			}
-			else if(loadedPCB.completed()){
-				System.out.println("pcb is finished");
-				myOS.completeProcess(popLoadedPCB());
-			}
-			
-			increaseCycle();
-			
-		}
-		System.out.println("Program complete");
-	}
-
 }

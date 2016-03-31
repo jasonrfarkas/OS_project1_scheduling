@@ -1,3 +1,9 @@
+/*
+	This is the driver class of our project. 
+	It checks to see how many arguments the program was run with 
+	and then it creates the appropriate OS class to handle it. 
+*/
+
 public class CPUScheduling {
 	public static void main(String [] args){
 		try{

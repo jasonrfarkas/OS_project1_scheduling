@@ -1,11 +1,10 @@
-
-
-
-
+/*Queue class has the features of an ordinary Queue. 
+ * enqueue method insert an element at the tail of the queue 
+ * dequeue method take out an element from the head of the queue 
+ */
 
 
 import java.util.NoSuchElementException;
-
 
 public class Queue extends LinkedList {
 
@@ -44,6 +43,8 @@ public class Queue extends LinkedList {
         return myPCB;
     }
 
+    
+    //this method returns the head of the queue without dequeuing it from the queue 
     public PCB peek() {
         if (head == null) {
             throw new NoSuchElementException();
@@ -51,6 +52,7 @@ public class Queue extends LinkedList {
         return head.getPcb();
     }
 
+    
      public void addToQue(Queue other) {
         while(other.head != null){
             this.enqueue(other.dequeue());
