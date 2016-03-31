@@ -49,7 +49,7 @@ public class CPU {
 	}
 	
 	public PCB popLoadedPCB() {
-		System.out.println("\n POPPING PCB");
+		//System.out.println("\n POPPING PCB");
 		PCB returnPCB= loadedPCB;
 		loadedPCB = null;
 		this.available = true;
@@ -65,7 +65,7 @@ public class CPU {
 			if(getCycle() %200 == 0 ){
 				printStats(myOS);
 			}
-			System.out.println("current CPU cycle is  "+getCycle());
+			//System.out.println("current CPU cycle is  "+getCycle());
 			if(isAvailable()){
 				// If ther cycle starts with noting loaded in the CPU
 				// Make sure anything meant to be out of the blockedQ is out
@@ -84,16 +84,16 @@ public class CPU {
 			// Check if quantom is up, if not increase quantom counter in scheduler
 			myOS.premtiveCheck();
 
-			System.out.println("Running line of code in pcb");
+			//System.out.println("Running line of code in pcb");
 			loadedPCB.runLine(); 
 			// If after running the line of code... 
 			if(loadedPCB.blocked()){
-				System.out.println("\tPCB burst is finished");
+				//System.out.println("\tPCB burst is finished");
 				// Have the OS deal with placing it in the blockedQ
 				myOS.cpuBlockedQHandOff(); 
 			}
 			else if(loadedPCB.completed()){
-				System.out.println("\t\tPCB is finished");
+				//System.out.println("\t\tPCB is finished");
 				// Have the OS  deal with completing the process
 				myOS.completeProcess(popLoadedPCB());
 			}
