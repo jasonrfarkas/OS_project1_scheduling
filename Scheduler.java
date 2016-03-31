@@ -1,3 +1,15 @@
+/*
+ * Scheduler class determines which scheduling algorithm to use according to the user input.
+ * sample input: in1.txt 1 2 3
+ * argv[0]- name of the input file
+ * argv[1]- an integer (1 = FCFS, 2 = SJF, 3 = RR)
+ * argv[2]- an integer which determines the quantam number. If an user insert any input for argv[2], when algorithm is FCFS or SJF,
+ * it will be ignored
+ * if an user does not insert any input for argv[2], when algorithm is RR,
+ * the default quantam(10) will be used. 
+ * 
+ */
+
 
 public class Scheduler{
 	
@@ -142,12 +154,6 @@ public class Scheduler{
 		LinkedList sorted = SJFsortOneList(unsorted1);
 		return SJFsortTwoList(sorted, unsorted); 
 
-/*		Node walker = unsorted.head;
-		while(walker!=null){
-			sorted.SJFsortOneList(unsorted);
-			walker = walker.getNext();
-		}
-		return sorted;*/
 	}
 
 	//takes one unsorted linked list and one sorted linked list; then returns a sorted linked list
@@ -156,7 +162,6 @@ public class Scheduler{
 		Node walker = unsorted.head;
 		while(walker!=null){
 			sorted.SJFinsert(walker.getPcb());
-			//sorted.SJFsortOneList(unsorted);
 			walker = walker.getNext();
 		}
 		return sorted;
@@ -167,14 +172,7 @@ public class Scheduler{
   		
   		LinkedList sorted = new LinkedList();
   		return SJFsortTwoList(sorted, unsorted);
-/*
-  		Node walker = unsorted.head;
   		
-  		while(walker!=null){
-  			sorted.SJFinsert(walker.getPcb());
-  			walker = walker.getNext();
-  		}
-  		return sorted;*/
   	}
 	
 }

@@ -4,7 +4,7 @@
 	Every movement of the PCB from one part of the system to 
 	another part of the system will move through the os. 
 
-	This class has attributes for functionallity and attributes 
+	This class has attributes for functionality and attributes 
 	for keeping track of running statistics. 
 
 	Funcional attributes: 
@@ -34,12 +34,12 @@
 	Methods: 
 	- Constructors: There are three constructors that accept parameters such that the first
 					parameter is required and the second and third are optional parameters 
-					that are used to set up the schuedling algorithm. The second paramter 
-					is a number to specify which alogithm to use where 1 maps to First come 
+					that are used to set up the scheduling algorithm. The second paramter 
+					is a number to specify which algorithm to use where 1 maps to First come 
 					First serve. 2 maps to Shortest Job First. And 3 maps to Round Robin. 
 					If Round Robin is used you can add an additional parameter to select 
 					the quantom used, where the default is 10. 
-	- Getters/Setters/Boolean checks: These are self explanitory. 
+	- Getters/Setters/Boolean checks: These are self explanatory. 
 	- Handoffs: Functions that are mostly called from outside the system to move PCB between system elements
 	- releaseCPU: pops the cpu's PCB
 	- refeshBlocked: Tells the blocked queque to move everything it has in the ready state to the ready queque, 
